@@ -1,0 +1,110 @@
+---
+title: 'RustCraft Mid Project Review'
+description: 'RustCraft has been by far the most advanced and educational of
+my personal projects to date. It has pushed me to learning
+many new programming concepts from Graphics APIs to Entity
+Component Systems helping me to understand the game engine
+pipeline more fully...'
+pubDate: 'Aug 25 2023'
+heroImage: '/rustcraft/Cover.png'
+---
+
+
+import GithubStats from '../../components/GithubStats.astro';
+
+<GithubStats repo="DarkZek/RustCraft" />
+
+RustCraft has been by far the most advanced and educational of
+my personal projects to date. It has pushed me to learning
+many new programming concepts from Graphics APIs to Entity
+Component Systems helping me to understand the game engine
+pipeline more fully. As it has been a learning process, I
+wanted to reflect on the decisions I have made this far and
+what I would do differently with my new-found knowledge.
+
+
+### Rust
+I chose Rust because of my goal to achieve high performance
+with the project, as well as to expose myself to lower-level
+languages and concepts to further understand the overall
+software toolchain. This is one of the choices I am most happy
+with as Rust allowed me to create a very robust codebase that
+was clean and exposed a safe interface to interact with while
+not restricting my ability to heavily optimise.
+                  
+In the beginning of the project this decision seemed
+like a poor one as I had only used Rust in a very limited
+capacity before. The borrow checking functionality of Rust
+made the object-oriented approach I took to creating the
+engine very difficult. I managed to get basic functionality
+working, however anything that required access to more than
+one variable at a time meant that the project would refuse to
+compile. To solve this and many other problems I settled on
+using an Entity Component System (ECS) for my core engine
+loop. This would not only solve my Rust borrowing checker
+problems but upon reflection turned out to be a large strength
+of the project, allowing me to compartmentalize every aspect
+of the engine to provide a nice and simplified codebase. This
+is because I used an ECS to manage my core render loop, not
+just the user facing objects. This means that to begin a frame
+I simply dispatch the mesh building system, the texture
+system, the UI system and then finally render the results to
+the screen. This worked especially well and meant that the
+entire engine well utilised multiple threads.
+
+
+At the
+current point in the project my experience in Rust means that
+it is not taking significantly longer to write than equivalent
+code in another language while still promising safety and
+stability. I think the decision to use Rust for this project
+was a very good one and one that has helped me to deliver one
+of the main goals of the project, to have performant voxel
+rendering.
+
+
+
+### wgpu-rs (Vulkan-like graphics api)
+
+The graphics API used for RustCraft was a very important one,
+I wanted the flexibility to create a highly compatible and
+performant voxel engine. These two attributes are hard to get
+together, I looked through many of the graphics crates in the
+Rust library and settled on wgpu-rs. It is essentially a
+wrapper over Vulkan, DirectX and WebGPU simply allowing code
+to be run on all three of these API’s while still being low
+level enough to optimise for speed. This was another major
+strength of RustCraft, usually porting engines to use multiple
+graphics API’s and support web at all is a gigantic
+undertaking – however because of this library RustCraft was
+able to run on the web, on desktops, gaming consoles and
+Linux!
+
+This was also a major change from what I am used to,
+previously only having used GUI libraries such as that on
+Android. Having to allocate buffers manually and schedule
+render passes led to me developing my knowledge of the
+graphics ecosystem significantly. The decision to use wgpu-rs
+meant that I kept options for alternate platforms open, while
+allowing for high amounts of optimisation and while being not
+as verbose as direct Vulkan. I am very happy with this
+decision; however, it is one of the biggest challenges of the
+project. <br />If I were to do the project again, I would have
+approached the problem with more planning and abstraction
+rather than the direct approach I have taken to storage. This
+is especially represented in Mesh storage where instead of
+abstracting a mesh into a single variable, it is spread over
+buffers, descriptors and assets which makes it messy and
+overcomplicated to work with. Creating generic types like this
+that would be used around the engine, and a more cohesive
+vision for how the graphics interacts with the rest of the
+engine would increase the code quality.
+
+
+I really enjoyed making RustCraft, from beginning to its
+current state it has taught me so much and I can’t wait to
+continue learning in the future!
+
+import { YouTube } from 'astro-embed';
+
+<YouTube id="https://www.youtube.com/embed/r3HJ04u0-2Q" />
