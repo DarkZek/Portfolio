@@ -3,6 +3,8 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+import { Content } from '../content/project-tiles/rustcraft.md'
 ---
 
 <!doctype html>
@@ -19,6 +21,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			<p>
 				I take pride in my ability to turn complex ideas into simple and elegant solutions. I am always eager to take on new challenges and learn new technologies. My passion for graphics allows me to bring a unique perspective to my work and helps me create visually stunning interfaces.
 			</p>
+			<Content />
 		</main>
 		<Footer />
 	</body>
