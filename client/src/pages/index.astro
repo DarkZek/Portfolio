@@ -1,7 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import HomeHeader from '../components/HomeHeader.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 import { Content } from '../content/project-tiles/rustcraft.md'
@@ -13,7 +13,7 @@ import { Content } from '../content/project-tiles/rustcraft.md'
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
-		<Header />
+		<HomeHeader />
 		<main>
 			<p>
 				I am a Front-End Developer with a passion for computer graphics.
