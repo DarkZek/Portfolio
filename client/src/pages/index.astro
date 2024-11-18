@@ -14,15 +14,76 @@ import { Content } from '../content/project-tiles/rustcraft.md'
 	</head>
 	<body>
 		<HomeHeader />
+		<img class="monstera" src="/monstera.webp" alt="Monstera Plant"/>
+		<div class="decorations">
+			<div class="d1"></div>
+			<div class="d2"></div>
+		</div>
 		<main>
-			<p>
-				I am a Front-End Developer with a passion for computer graphics.
-			</p>
-			<p>
-				I take pride in my ability to turn complex ideas into simple and elegant solutions. I am always eager to take on new challenges and learn new technologies. My passion for graphics allows me to bring a unique perspective to my work and helps me create visually stunning interfaces.
-			</p>
-			<Content />
+			<div>
+				<h5 class="title">Hi,<br>I'm Marshall</h5>
+				<p>
+					I am a Front-End Developer with a passion for computer graphics.
+				</p>
+			</div>
+			<div class="about">
+				<Content />
+			</div>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	main {
+		max-width: 475px;
+	}
+	.title {
+		font-weight: bold;
+		color: var(--accent);
+		font-size: max(min(10vw, 70px), 40px);
+
+		color: transparent;
+		text-shadow: 0px 1px 2px var(--accent);
+		-webkit-background-clip: text;
+		-moz-background-clip: text;
+		background-clip: text;
+		background-color: #495944;
+	}
+
+	.about {
+		margin-top: 100vh;
+	}
+
+	.monstera {
+		position: absolute;
+		bottom: 0px;
+		left: 0px;
+		width: 300px;
+		max-width: 30vw;
+	}
+
+	.decorations {
+
+		div {
+			width: 30vw;
+			height: 30vw;
+			position: fixed;
+			border-radius: 100vw;
+			z-index: -1;
+			filter: blur(200px);
+		}
+
+		.d1 {
+			background-color: #d4eed7ff;
+			right: 10vw;
+			bottom: 15vh;
+		}
+
+		.d2 {
+			background-color: #E9EED4ff;
+			left: 10vw;
+			top: 10vh;
+		}
+	}
+</style>
