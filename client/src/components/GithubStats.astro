@@ -1,0 +1,152 @@
+---
+import { Icon } from 'astro-icon/components'
+const { repo } = Astro.props;
+// Fetch external data, even from a private API or database
+const data = await fetch(`https://api.github.com/repos/${repo}`).then(r => r.json());
+
+let stars = data.stargazers_count
+let forks = data.forks_count
+
+---
+
+<div
+    class="github-info col"
+    onclick="window.open('https://github.com/darkzek/rustcraft', '_blank');"
+>
+    <img src="/GitHub_Logo.png" />
+    <div
+        style="display: flex"
+    >
+        <div class="col stars github-stat">
+            <svg
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            version="1.1"
+            data-view-component="true"
+            height="16"
+            width="16"
+            >
+                <path
+                    style="fill: #f0b106"
+                    fill-rule="evenodd"
+                    d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"
+                ></path>
+            </svg>
+            <span class="label">Stars</span>
+            <span class="value">{ stars }</span>
+        </div>
+        <div class="col github-stat">
+            <svg
+                aria-hidden="true"
+                viewBox="0 0 16 16"
+                version="1.1"
+                data-view-component="true"
+                height="16"
+                width="16"
+                class="octicon octicon-repo-forked"
+            >
+            <path
+                style="fill: #adadad"
+                fill-rule="evenodd"
+                d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"
+            ></path>
+            </svg>
+            <span class="label">Forks</span>
+            <span class="value">{ forks ?? "↺" }</span>
+        </div>
+    </div>
+</div>
+
+<style>
+.github-info {
+    border-radius: 10px;
+    background-color: #f8f8f8;
+    height: 48px !important;
+    display: flex;
+    padding-left: 10px;
+    cursor: pointer;
+    max-width: 100%;
+    overflow: auto hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover {
+        background-color: #efefef;
+    }
+}
+
+.github-info::-webkit-scrollbar {
+    display: none;
+}
+
+.github-info img {
+    height: 30px;
+    padding-right: 10px;
+    vertical-align: middle;
+}
+
+.github-stat {
+    border-radius: 10px;
+    border: 1px #7e7e7e solid;
+    background-color: white;
+    min-height: 40px !important;
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 4px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    font-size: 16px;
+    transition: border 0.1s, background-color 0.1s ease-in-out;
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+}
+
+.github-stat svg {
+    margin-right: 4px;
+}
+
+.github-stat .label {
+    color: #6b6b6b;
+    text-decoration: none;
+    padding-top: 2px;
+    padding-right: 10px;
+    padding-bottom: 2px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.github-stat .value {
+    border-left: 1px #6b6b6b solid;
+    padding-left: 9px;
+    text-decoration: none;
+    color: black;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.stars {
+    border: 1px #f0b106 solid !important;
+
+    &:hover {
+        border: 1px #ac810a solid !important;
+    }
+}
+
+.stars .label {
+    color: #f0b106 !important;
+}
+
+.stars .value {
+    border-left: 1px #f0b106 solid !important;
+}
+</style>
