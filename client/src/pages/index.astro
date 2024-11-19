@@ -4,8 +4,6 @@ import Footer from '../components/Footer.astro';
 import HomeHeader from '../components/HomeHeader.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { Icon } from 'astro-icon/components'
-
-import { Content } from '../content/project-tiles/rustcraft.md'
 ---
 
 <!doctype html>
@@ -48,7 +46,14 @@ import { Content } from '../content/project-tiles/rustcraft.md'
 			</main>
 		</div>
 		<div class="section-2">
-			<Content />
+			<div class="content">
+				<div class="personal-statement">
+					<img src="/headshot-popout.webp" alt="Headshot" class="headshot" />
+					<p>
+						I take pride in my ability to turn complex ideas into simple and elegant solutions. I am always eager to take on new challenges and learn new technologies. My passion for graphics allows me to bring a unique perspective to my work and helps me create visually stunning interfaces.
+					</p>
+				</div>
+			</div>
 		</div>
 		<Footer />
 	</body>
@@ -85,7 +90,6 @@ import { Content } from '../content/project-tiles/rustcraft.md'
 
 	.section-2 {
 		background-color: var(--accent);
-		min-height: 100vh;
 		width: 100%;
 	}
 
@@ -107,5 +111,29 @@ import { Content } from '../content/project-tiles/rustcraft.md'
 		flex-direction: column;
 		align-items: center;
 		color: var(--accent-light);
+		bottom: 15px;
+	}
+
+	.personal-statement {
+		color: white;
+		padding: 24px 18px;
+		display: flex;
+		flex-direction: row;
+		gap: 50px;
+		font-style: italic;
+		align-items: center;
+
+		@media screen and (max-width: 800px) {
+			gap: 20px;
+		}
+
+		@media screen and (max-width: 800px) {
+			flex-direction: column;
+		}
+
+		img {
+			width: 200px;
+			border-radius: 200px;
+		}
 	}
 </style>
