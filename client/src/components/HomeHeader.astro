@@ -43,21 +43,28 @@ import { Icon } from 'astro-icon/components'
         a {
             color: var(--accent-light);
             text-decoration: none;
-            margin-left: 14px;
+            margin-right: 12px;
+            transition: color 0.2s ease-in-out;
+
+            &:hover {
+                color: var(--accent);
+            }
         }
     }
 
     .navigation {
         background-color: #F0F0F0;
-        padding: 8px 10px;
+        padding: 6px 8px;
         border-radius: 100px;
         display: flex;
+        margin-top: 4px;
         
         a {
             color: var(--accent-light);
             text-decoration: none !important;
             padding: 4px 25px;
             border-radius: 100px;
+            font-size: 16px;
 
             &:hover {
                 color: var(--accent);
