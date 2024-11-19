@@ -2,39 +2,50 @@
 import { Icon } from 'astro-icon/components'
 ---
 
-<header>
-    <div class="left">
-
-    </div>
-    <div class="center">
-        <div class="navigation">
-            <a class="selected" href="/">Home</a>
-            <a href="/blog">Blog</a>
-            <a href="/projects">Projects</a>
+<div class="sizer">
+    <header>
+        <div class="left">
+            <span class="name">Marshall Scott</span>
         </div>
-    </div>
-    <div class="right socials">
-        <a href="https://bsky.app/profile/darkzek.bsky.social" target="_blank">
-            <span class="sr-only">Follow me on Bluesky</span>
-            <Icon name="bluesky" />
-        </a>
-        <a href="https://github.com/darkzek" target="_blank">
-            <span class="sr-only">Follow me on Github</span>
-            <Icon name="github" />
-        </a>
-        <a href="https://www.linkedin.com/in/marshall-scott-746989167/" target="_blank">
-            <span class="sr-only">Connect with me on Linkedin</span>
-            <Icon name="linkedin" />
-        </a>
-    </div>
-</header>
+        <div class="center">
+            <div class="navigation">
+                <a class="selected" href="/">Home</a>
+                <a href="/blog">Blog</a>
+                <a href="/projects">Projects</a>
+            </div>
+        </div>
+        <div class="right socials">
+            <a href="https://bsky.app/profile/darkzek.bsky.social" target="_blank">
+                <span class="sr-only">Follow me on Bluesky</span>
+                <Icon name="bluesky" />
+            </a>
+            <a href="https://github.com/darkzek" target="_blank">
+                <span class="sr-only">Follow me on Github</span>
+                <Icon name="github" />
+            </a>
+            <a href="https://www.linkedin.com/in/marshall-scott-746989167/" target="_blank">
+                <span class="sr-only">Connect with me on Linkedin</span>
+                <Icon name="linkedin" />
+            </a>
+        </div>
+    </header>
+</div>
 
 <style>
+    .sizer {
+        position: absolute;
+        width: 100%;
+        left: 0px;
+        right: 0px;
+        max-width: max(min(70vw, 1200px), 670px);
+        margin: auto;
+    }
+
     header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        padding: 16px;
+        padding: 16px 32px;
 
         > div {
             flex: 1 0 0;
@@ -59,13 +70,12 @@ import { Icon } from 'astro-icon/components'
 
     .socials {
         font-size: 2.2rem;
-        padding-left: 16px;
         padding-top: 4px;
 
         a {
             color: var(--accent-light);
             text-decoration: none;
-            margin-right: 12px;
+            margin-left: 16px;
             transition: color 0.2s ease-in-out;
 
             &:hover {
@@ -98,5 +108,12 @@ import { Icon } from 'astro-icon/components'
         background-color: var(--accent);
         color: white !important;
         box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+
+    .name {
+        padding-top: 12px;
+        color: var(--accent-light);
+        white-space: nowrap;
+        padding-right: 8px;
     }
 </style>
