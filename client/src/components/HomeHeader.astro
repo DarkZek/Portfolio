@@ -35,10 +35,32 @@ import { Icon } from 'astro-icon/components'
         flex-direction: row;
         justify-content: space-between;
         padding: 16px;
+
+        > div {
+            flex: 1 0 0;
+            display: flex;
+        }
+
+        .center {
+            flex-grow: 0;
+            flex-direction: column;
+        }
+
+        .right {
+            flex-direction: row-reverse;
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .socials {
+            display: none !important;
+        }
     }
 
     .socials {
         font-size: 2.2rem;
+        padding-left: 16px;
+        padding-top: 4px;
 
         a {
             color: var(--accent-light);

@@ -15,10 +15,6 @@ import { Content } from '../content/project-tiles/rustcraft.md'
 	<body>
 		<HomeHeader />
 		<img class="monstera" src="/monstera.webp" alt="Monstera Plant"/>
-		<div class="decorations">
-			<div class="d1"></div>
-			<div class="d2"></div>
-		</div>
 		<main>
 			<div class="section-1">
 				<div class="title">
@@ -53,6 +49,15 @@ import { Content } from '../content/project-tiles/rustcraft.md'
 </html>
 
 <style>
+	:root {
+		background: linear-gradient(90deg,#F7F7EF 0%, #F8FEF8 100%);;
+	}
+
+	body {
+		max-width: 1200px;
+		margin: auto;
+	}
+
 	main {
 		max-width: min(calc(100vw - 2em), 475px);
 	}
@@ -78,29 +83,5 @@ import { Content } from '../content/project-tiles/rustcraft.md'
 		left: 0px;
 		width: 300px;
 		max-width: 30vw;
-	}
-
-	.decorations {
-
-		div {
-			width: 30vw;
-			height: 30vw;
-			position: fixed;
-			border-radius: 100vw;
-			z-index: -1;
-			filter: blur(200px);
-		}
-
-		.d1 {
-			background-color: #d4eed7ff;
-			right: 10vw;
-			bottom: 15vh;
-		}
-
-		.d2 {
-			background-color: #E9EED4ff;
-			left: 10vw;
-			top: 10vh;
-		}
 	}
 </style>
