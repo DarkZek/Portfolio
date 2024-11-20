@@ -1,0 +1,56 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import HomeHeader from '../components/HomeHeader.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { Icon } from 'astro-icon/components';
+
+import { Content as RubySweepsContent } from '../content/projectTiles/ruby-sweeps.mdx'
+import { Content as RustcraftContent } from '../content/projectTiles/rustcraft.mdx'
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<div class="content">
+			<HomeHeader selected="projects" />
+			<main>
+				<div class="section-1">
+					<div>
+						<RubySweepsContent />
+					</div>
+					<div>
+						<RustcraftContent />
+					</div>
+				</div>
+			</main>
+		</div>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	:root {
+		background: linear-gradient(90deg,#F7F7EF 0%, #F8FEF8 100%);;
+	}
+
+	.content {
+        max-width: max(min(70vw, 1200px), 670px);
+		margin: auto;
+		position: relative;
+	}
+
+	main {
+		padding: 0px;
+	}
+
+	.section-1 {
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+</style>
