@@ -11,9 +11,9 @@ const { selected } = Astro.props;
         </div>
         <div class="center">
             <div class="navigation">
-                <a selected={selected === 'home'} href="/">Home</a>
-                <a selected={selected === 'blog'} href="/blog">Blog</a>
-                <a selected={selected === 'projects'} href="/projects">Projects</a>
+                <a class={selected === 'home' ? 'selected' : ''} href="/">Home</a>
+                <a class={selected === 'blog' ? 'selected' : ''} href="/blog">Blog</a>
+                <a class={selected === 'projects' ? 'selected' : ''} href="/projects">Projects</a>
             </div>
         </div>
         <div class="right socials">
@@ -103,7 +103,7 @@ const { selected } = Astro.props;
                 color: var(--accent);
             }
 
-            &[selected] {
+            & .selected {
                 background-color: var(--accent);
                 color: white !important;
                 box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
