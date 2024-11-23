@@ -1,5 +1,6 @@
 ---
-import { Icon } from 'astro-icon/components'
+import GithubLogo from '../img/GitHub_Logo.png?url'
+
 const { repo } = Astro.props;
 // Fetch external data, even from a private API or database
 const data = await fetch(`https://api.github.com/repos/${repo}`).then(r => r.json());
@@ -13,7 +14,7 @@ let forks = data.forks_count
     class="github-info col"
     onclick="window.open('https://github.com/darkzek/rustcraft', '_blank');"
 >
-    <img src="/GitHub_Logo.png" />
+    <img src={GithubLogo} />
     <div
         style="display: flex"
     >
