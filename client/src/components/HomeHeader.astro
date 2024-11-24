@@ -1,10 +1,10 @@
 ---
 import { Icon } from 'astro-icon/components'
 
-const { selected } = Astro.props;
+const { selected, absolute } = Astro.props;
 ---
 
-<div class="sizer">
+<div class="sizer" style={`position: ${absolute ? 'absolute' : 'unset'}`}>
     <header>
         <div class="left">
             <span class="name">Marshall Scott</span>
@@ -15,6 +15,7 @@ const { selected } = Astro.props;
                 <a class={selected === 'blog' ? 'selected' : ''} href="/blog">Blog</a>
                 <a class={selected === 'projects' ? 'selected' : ''} href="/projects">Projects</a>
             </div>
+            <Icon class="hamburger" name="mingcute:menu-line" />
         </div>
         <div class="right socials">
             <a href="https://bsky.app/profile/darkzek.bsky.social" target="_blank">
@@ -51,11 +52,12 @@ const { selected } = Astro.props;
         > div {
             flex: 1 0 0;
             display: flex;
+            justify-content: center;
+            flex-direction: column;
         }
 
         .center {
             flex-grow: 0;
-            flex-direction: column;
         }
 
         .right {
@@ -71,7 +73,7 @@ const { selected } = Astro.props;
 
     .socials {
         font-size: 2.2rem;
-        padding-top: 4px;
+        height: 1em;
 
         a {
             color: var(--accent-light);
@@ -90,7 +92,6 @@ const { selected } = Astro.props;
         padding: 6px 8px;
         border-radius: 100px;
         display: flex;
-        margin-top: 4px;
         
         a {
             color: var(--accent-light);
@@ -98,6 +99,7 @@ const { selected } = Astro.props;
             padding: 4px 25px;
             border-radius: 100px;
             font-size: 16px;
+            user-select: none;
 
             &:hover {
                 color: var(--accent);
@@ -111,8 +113,25 @@ const { selected } = Astro.props;
         }
     }
 
+    @media screen and (max-width: 550px) {
+        .hamburger {
+            display: block !important;
+        }
+
+        .navigation {
+            display: none;
+        }
+        
+    }
+
+    .hamburger {
+        display: none;
+        font-size: 1.8rem;
+        color: var(--accent-light);
+        cursor: pointer;
+    }
+
     .name {
-        padding-top: 12px;
         color: var(--accent-light);
         white-space: nowrap;
         padding-right: 8px;
