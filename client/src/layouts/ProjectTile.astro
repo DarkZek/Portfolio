@@ -1,0 +1,65 @@
+---
+import { Icon } from 'astro-icon/components';
+import { getCollection } from 'astro:content';
+
+const collection = await getCollection('projectTiles');
+
+type Props = { stub: string };
+
+const collectionEntry = collection.find(({ slug }) => slug === Astro.props.stub)
+
+if (!collectionEntry) {
+	throw new Error('Project not found');
+}
+
+const { title, tags, color, cover } = collectionEntry.data;
+const { Content } = await collectionEntry.render()
+---
+
+<a
+	href={`/projects/${Astro.props.stub}`}
+>
+	<article>
+		<img
+			class="cover shadow"
+			src={cover.src}
+		/>
+		<h4>{title}</h4>
+		<div
+			class="tags"
+		>
+			{tags.map(tag => (
+				<span>{tag}</span>
+			))}
+		</div>
+	
+		<Content />
+	</article>
+</a>
+
+<style define:vars={{ color }}>
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+
+		span {
+			user-select: none;
+			background: color-mix(in srgb, var(--color) 20%, transparent);
+			padding: 4px 12px;
+			border-radius: 50px;
+			font-size: 12px;
+			color: color-mix(in srgb, var(--color) 60%, #3838387c);
+		}
+	}
+
+	article {
+		padding: 20px;
+	}
+
+	a {
+		text-decoration: none;
+		color: inherit
+	}
+</style>

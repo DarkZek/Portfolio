@@ -1,0 +1,41 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import HomeHeader from '../../components/HomeHeader.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import ProjectTile from '../../layouts/ProjectTile.astro';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<div class="content">
+			<HomeHeader selected="projects" />
+			<main>
+				<div class="section-1">
+					<ProjectTile stub="ruby-sweeps" />
+					<ProjectTile stub="rustcraft" />
+				</div>
+			</main>
+		</div>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.content {
+        max-width: max(min(70vw, 1200px), 670px);
+		margin: auto;
+		position: relative;
+	}
+
+	main {
+		padding: 0px;
+	}
+
+	.section-1 {
+	}
+</style>

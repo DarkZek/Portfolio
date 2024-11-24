@@ -138,3 +138,6 @@ hr {
 	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
 }
+.shadow {
+	box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
