@@ -1,21 +1,43 @@
 ---
 import { Icon } from 'astro-icon/components'
+import NavigationMenu from './NavigationMenu.astro';
 
-const { selected, absolute } = Astro.props;
+const { selected } = Astro.props;
 ---
 
-<div class="sizer" style={`position: ${absolute ? 'absolute' : 'unset'}`}>
+<div
+    transition:name="header"
+    class="sizer"
+>
     <header>
         <div class="left">
             <span class="name">Marshall Scott</span>
         </div>
         <div class="center">
             <div class="navigation">
-                <a class={selected === 'home' ? 'selected' : ''} href="/">Home</a>
-                <a class={selected === 'blog' ? 'selected' : ''} href="/blog">Blog</a>
-                <a class={selected === 'projects' ? 'selected' : ''} href="/projects">Projects</a>
+                <a
+                    class={selected === 'home' ? 'selected' : ''}
+                    href="/"
+                >
+                    Home
+                </a>
+                <a
+                    class={selected === 'blog' ? 'selected' : ''}
+                    href="/blog"
+                >
+                    Blog
+                </a>
+                <a
+                    class={selected === 'projects' ? 'selected' : ''}
+                    href="/projects"
+                >
+                    Projects
+                </a>
             </div>
-            <Icon class="hamburger" name="mingcute:menu-line" />
+            <Icon
+                id="hamburger"
+                name="mingcute:menu-line"
+            />
         </div>
         <div class="right socials">
             <a href="https://bsky.app/profile/darkzek.bsky.social" target="_blank">
@@ -34,13 +56,37 @@ const { selected, absolute } = Astro.props;
     </header>
 </div>
 
+<div class="gap"/>
+
+<NavigationMenu />
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        document.getElementById('hamburger')?.addEventListener('click', () => {
+            const nav = document.getElementById('navigation-menu')
+            nav?.setAttribute('open', '')
+        });
+    });
+</script>
+
 <style>
+    
+    .gap { 
+        height: 79px;
+    }
+
     .sizer {
-        position: absolute;
         width: 100%;
         left: 0px;
         right: 0px;
         margin: auto;
+        position: fixed;
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     header {
@@ -48,6 +94,8 @@ const { selected, absolute } = Astro.props;
         flex-direction: row;
         justify-content: space-between;
         padding: 16px 32px;
+        max-width: 800px;
+        width: calc(100vw - 32px);
 
         > div {
             flex: 1 0 0;
@@ -120,7 +168,7 @@ const { selected, absolute } = Astro.props;
     }
 
     @media screen and (max-width: 550px) {
-        .hamburger {
+        #hamburger {
             display: block !important;
         }
 
@@ -130,7 +178,7 @@ const { selected, absolute } = Astro.props;
         
     }
 
-    .hamburger {
+    #hamburger {
         display: none;
         font-size: 1.8rem;
         color: var(--accent-light);

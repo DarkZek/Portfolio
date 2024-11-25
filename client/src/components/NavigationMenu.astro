@@ -1,0 +1,62 @@
+---
+import { Icon } from "astro-icon/components"
+---
+
+<nav
+    id="navigation-menu"
+>
+    <a href="/">Home</a>
+    <a href="/blog">Blog</a>
+    <a href="/projects">Projects</a>
+    <Icon
+        id="navigation-close"
+        name="mingcute:close-line"
+        class="exit"
+    />
+</nav>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        document.getElementById('navigation-close')?.addEventListener('click', () => {
+            const nav = document.getElementById('navigation-menu')
+            nav?.removeAttribute('open')
+        });
+    });
+</script>
+
+<style>
+
+nav {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+
+    position: fixed;
+    inset: 0px;
+    padding: 32px;
+
+    display: none;
+
+    z-index: 10;
+
+    a {
+        color: #383838;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 24px;
+        line-height: 200%;
+    }
+
+    &[open] {
+        display: flex;
+    }
+}
+
+.exit {
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    font-size: 24px;
+}
+
+</style>
