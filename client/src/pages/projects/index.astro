@@ -16,8 +16,18 @@ import ProjectTile from '../../layouts/ProjectTile.astro';
 			<HomeHeader selected="projects" />
 			<main>
 				<div class="section-1">
-					<ProjectTile stub="ruby-sweeps" />
-					<ProjectTile stub="rustcraft" />
+					<a
+						class="project-tile"
+						href={`/projects/rustcraft`}
+					>
+						<ProjectTile stub="rustcraft" />
+					</a>
+					<a
+						class="project-tile"
+						href={`/projects/ruby-sweeps`}
+					>
+						<ProjectTile stub="ruby-sweeps" />
+					</a>
 				</div>
 			</main>
 		</div>
@@ -37,5 +47,15 @@ import ProjectTile from '../../layouts/ProjectTile.astro';
 	}
 
 	.section-1 {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.project-tile {
+		text-decoration: none;
+		color: inherit;
+		margin-bottom: 20vh;
+		padding-top: 24px;
 	}
 </style>

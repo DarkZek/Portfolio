@@ -14,30 +14,46 @@ if (!collectionEntry) {
 
 const { title, tags, color, cover } = collectionEntry.data;
 const { Content } = await collectionEntry.render()
+
+let TitleComponent;
+
+switch(collectionEntry.slug) {
+	case 'ruby-sweeps':
+		TitleComponent = (await import('../components/titles/RubySweeps.astro')).default;
+		break;
+	case 'rustcraft':
+		TitleComponent = (await import('../components/titles/Rustcraft.astro')).default;
+}
 ---
 
-<a
-	href={`/projects/${Astro.props.stub}`}
->
-	<article>
-		<img
-			class="cover shadow"
-			src={cover.src}
-		/>
-		<h4>{title}</h4>
-		<div
-			class="tags"
-		>
-			{tags.map(tag => (
-				<span>{tag}</span>
-			))}
-		</div>
-	
-		<Content />
-	</article>
-</a>
+<tile>
+	<div
+		class="title"
+	>
+		<TitleComponent />
+	</div>
+
+	<div
+		class="tags"
+	>
+		{tags.map(tag => (
+			<span>{tag}</span>
+		))}
+	</div>
+
+	<Content />
+
+	<img
+		class="cover shadow"
+		src={cover.src}
+	/>
+</tile>
 
 <style define:vars={{ color }}>
+
+	.title {
+		padding-bottom: 8px;
+	}
 
 	.tags {
 		display: flex;
@@ -56,10 +72,5 @@ const { Content } = await collectionEntry.render()
 
 	article {
 		padding: 20px;
-	}
-
-	a {
-		text-decoration: none;
-		color: inherit
 	}
 </style>
