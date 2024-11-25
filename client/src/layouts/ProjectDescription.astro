@@ -34,6 +34,7 @@ const { title, color, link } = Astro.props;
 		display: flex;
 		flex-direction: column;
 		margin-bottom: 24px;
+		display: none;
 
 		.frame {
 			aspect-ratio: 2/1;
@@ -83,6 +84,12 @@ const { title, color, link } = Astro.props;
 		}
 		to {
 			transform: rotate(360deg);
+		}
+	}
+
+	@media screen and (min-width: 700px) and (min-height: 700px) {
+		.hero-frame {
+			display: flex;
 		}
 	}
 </style>
