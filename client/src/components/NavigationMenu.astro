@@ -35,9 +35,14 @@ nav {
     inset: 0px;
     padding: 32px;
 
-    display: none;
+    visibility: hidden;
 
     z-index: 10;
+    height: 70px;
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+
+    transition: height 0.3s ease, background-color 0.3s ease-in;
 
     a {
         color: #383838;
@@ -48,7 +53,9 @@ nav {
     }
 
     &[open] {
-        display: flex;
+        visibility: visible;
+        height: 100vh;
+        background-color: rgba(255, 255, 255, 0.8);
     }
 }
 
