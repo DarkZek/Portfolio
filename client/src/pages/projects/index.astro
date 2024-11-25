@@ -28,6 +28,12 @@ import ProjectTile from '../../layouts/ProjectTile.astro';
 					>
 						<ProjectTile stub="ruby-sweeps" />
 					</a>
+					<a
+						class="project-tile"
+						href={`/projects/flixr`}
+					>
+						<ProjectTile stub="flixr" />
+					</a>
 				</div>
 			</main>
 		</div>
@@ -37,7 +43,7 @@ import ProjectTile from '../../layouts/ProjectTile.astro';
 
 <style>
 	.content {
-        max-width: max(min(70vw, 1200px), 670px);
+        max-width: max(min(70vw, 1200px), 700px);
 		margin: auto;
 		position: relative;
 	}
@@ -55,7 +61,14 @@ import ProjectTile from '../../layouts/ProjectTile.astro';
 	.project-tile {
 		text-decoration: none;
 		color: inherit;
-		margin-bottom: 20vh;
-		padding-top: 24px;
+		margin-bottom: 80px;
+		margin-top: 24px;
+		padding: 16px;
+		transition: background-color 0.2s ease-in;
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.02);
+			border-radius: 15px;
+		}
 	}
 </style>

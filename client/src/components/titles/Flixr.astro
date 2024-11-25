@@ -1,0 +1,41 @@
+---
+import Video from '../../img/flixr/logo.webm?url'
+---
+
+<div
+  class="row"
+>
+  <div
+    class="title"
+  >
+    <video src={Video} disableRemotePlayback muted autoplay></video>
+  </div>
+  <h2>Flixrapp</h2>  
+</div>
+
+<style>
+  .title {
+    width: 80px;
+    height: 80px;
+    position: relative;
+  }
+
+  video {
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 8px;
+  }
+
+  h2 {
+    margin-bottom: 0px;
+    font-weight: 100;
+    margin-left: 12px;
+  }
+</style>

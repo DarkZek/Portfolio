@@ -23,6 +23,10 @@ switch(collectionEntry.slug) {
 		break;
 	case 'rustcraft':
 		TitleComponent = (await import('../components/titles/Rustcraft.astro')).default;
+		break;
+	case 'flixr':
+		TitleComponent = (await import('../components/titles/Flixr.astro')).default;
+		break;
 }
 ---
 
