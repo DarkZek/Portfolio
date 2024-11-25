@@ -47,10 +47,15 @@ switch(collectionEntry.slug) {
 
 	<Content />
 
-	<img
-		class="cover shadow"
-		src={cover.src}
-	/>
+	
+	<div
+		transition:name={`project cover ${title} image`}
+	>
+		<img
+			class="cover shadow"
+			src={cover.src}
+		/>
+	</div>
 </tile>
 
 <style define:vars={{ color }}>

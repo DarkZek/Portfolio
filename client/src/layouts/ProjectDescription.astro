@@ -1,6 +1,7 @@
 ---
 import { Icon } from 'astro-icon/components';
 import type { CollectionEntry } from 'astro:content';
+import { undefined } from 'astro:schema';
 
 type Props = CollectionEntry<'projects'>['data'];
 
@@ -8,15 +9,21 @@ const { title, color, link } = Astro.props;
 ---
 
 <article>
-	<div class="hero-frame">
-		<span class="url">{ link }</span>
-		<div class="frame shadow">
-			<Icon class="loading" name="mingcute:loading-3-fill" />
-			<iframe
-				src={ link }
-			/>
-		</div>
-	</div>
+	{
+		link ? 
+			<div
+				transition:name={`project cover ${title} image`}
+				class="hero-frame"
+			>
+				<span class="url">{ link }</span>
+				<div class="frame shadow">
+					<Icon class="loading" name="mingcute:loading-3-fill" />
+					<iframe
+						src={ link }
+					/>
+				</div>
+			</div> : undefined
+	}
 	<div class="prose">
 		<slot />
 	</div>
