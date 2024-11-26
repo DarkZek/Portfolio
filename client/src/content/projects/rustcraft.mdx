@@ -8,6 +8,20 @@ description: 'RustCraft is a hobby project delving into High Performance low lev
 
 ## Rustcraft
 
+import GithubStats from '../../components/GithubStats.astro';
+
+<GithubStats repo="DarkZek/RustCraft" />
+
 RustCraft has been a hobby project of mine for four years, it's a project through which to explore my interest in
 High Performance Software, Rust, 3D Graphics and my favourite game, Minecraft.
 
+#### History
+
+RustCraft has been through many iterations and rewrites where the technology stack has changed,
+this is natural for a hobby project with the goal of learning and exploring new technologies.
+
+A basic timeline of RustCraft's history is as follows:
+
+- **2020** - RustCraft was started using Rust and a light wrapper over Vulkan (Vulkano), using no ECS it was entirely custom other the the addition of winit for windowing
+- **2021** - RustCraft was rewritten using wgpu-rs and the specs ECS library, this was a major rewrite to allow for more compatibility and to solve architectural problems
+- **2023** - RustCraft was converted to use the bevy game engine, this was to allow for the parts of the engine that were not core to the mission of learning rendering and high performance software to be handled

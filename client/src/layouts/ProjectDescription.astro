@@ -43,12 +43,20 @@ const { title, color, link } = Astro.props;
 </article>
 
 <style>
+	article {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
 	.hero-frame {
 
 		display: flex;
 		flex-direction: column;
 		margin-bottom: 24px;
 		display: none;
+		width: 80vw;
+		max-height: 80vh;
 
 		.frame {
 			aspect-ratio: 2/1;

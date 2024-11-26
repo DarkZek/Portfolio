@@ -2,7 +2,6 @@
 import GithubLogo from '../img/GitHub_Logo.png?url'
 
 const { repo } = Astro.props;
-// Fetch external data, even from a private API or database
 const data = await fetch(`https://api.github.com/repos/${repo}`).then(r => r.json());
 
 let stars = data.stargazers_count
@@ -53,7 +52,7 @@ let forks = data.forks_count
             ></path>
             </svg>
             <span class="label">Forks</span>
-            <span class="value">{ forks ?? "↺" }</span>
+            <span class="value">{ forks }</span>
         </div>
     </div>
 </div>
