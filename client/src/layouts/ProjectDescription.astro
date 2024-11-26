@@ -14,7 +14,16 @@ const { title, color, link } = Astro.props;
 				transition:name={`project cover ${title} image`}
 				class="hero-frame"
 			>
-				<span class="url">{ link }</span>
+				<span class="url">
+					{ link }
+					<a
+						class="open-external"
+						href={link}
+						target="_blank"
+					>
+						<Icon name="mingcute:external-link-line" />
+					</a>
+				</span>
 				<div class="frame shadow">
 					<Icon class="loading" name="mingcute:loading-3-fill" />
 					<iframe
@@ -73,6 +82,12 @@ const { title, color, link } = Astro.props;
 			border-radius: 10px;
 			font-size: 14px;
 			color: rgb(68, 68, 68);
+			display: flex;
+			justify-content: space-between;
+
+			.open-external {
+				color: black;
+			}
 		}
 	}
 	.prose {
