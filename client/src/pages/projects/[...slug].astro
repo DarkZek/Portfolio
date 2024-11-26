@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
 import ProjectDescription from '../../layouts/ProjectDescription.astro';
+import { SITE_TITLE } from '../../consts';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import HomeHeader from '../../components/HomeHeader.astro';
@@ -24,7 +25,7 @@ const { Content } = await post.render();
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={post.data.title} description={`${post.data.description.substring(0, 200)}...`} image={post.data.image?.src} />
+		<BaseHead title={`${SITE_TITLE} | ${post.data.title}`} description={`${post.data.description.substring(0, 200)}...`} image={post.data.image?.src} />
 	</head>
 	<body>
 		<div class="content">
