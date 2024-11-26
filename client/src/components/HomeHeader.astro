@@ -1,6 +1,7 @@
 ---
 import { Icon } from 'astro-icon/components'
 import NavigationMenu from './NavigationMenu.astro';
+import FontChangingEffect from './FontChangingEffect.astro';
 
 const { selected } = Astro.props;
 ---
@@ -15,7 +16,9 @@ const { selected } = Astro.props;
                 class="name"
                 href="/"
             >
-                Marshall Scott
+                <FontChangingEffect>
+                    Marshall Scott
+                </FontChangingEffect>
             </a>
         </div>
         <div class="center">
@@ -195,5 +198,6 @@ const { selected } = Astro.props;
         white-space: nowrap;
         padding-right: 8px;
         text-decoration: none;
+        font-size: 22px;
     }
 </style>
