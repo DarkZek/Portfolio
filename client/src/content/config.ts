@@ -9,7 +9,7 @@ const blog = defineCollection({
 		// Transform string to Date object
 		pubDate: z.coerce.date(),
 		updatedDate: z.coerce.date().optional(),
-		heroImage: image().optional(),
+		image: image().optional(),
 	}),
 });
 
@@ -27,11 +27,12 @@ const projectTiles = defineCollection({
 const projects = defineCollection({
 	type: 'content',
 	// Type-check frontmatter using a schema
-	schema: z.object({
+	schema: ({ image }) => z.object({
 		title: z.string(),
 		color: z.string(),
 		link: z.string().optional(),
 		description: z.string(),
+		image: image()
 	}),
 });
 
