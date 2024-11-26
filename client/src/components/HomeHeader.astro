@@ -11,7 +11,12 @@ const { selected } = Astro.props;
 >
     <header>
         <div class="left">
-            <span class="name">Marshall Scott</span>
+            <a
+                class="name"
+                href="/"
+            >
+                Marshall Scott
+            </a>
         </div>
         <div class="center">
             <div class="navigation">
@@ -189,5 +194,6 @@ const { selected } = Astro.props;
         color: var(--accent-light);
         white-space: nowrap;
         padding-right: 8px;
+        text-decoration: none;
     }
 </style>
