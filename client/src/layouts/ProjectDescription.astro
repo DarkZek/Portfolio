@@ -18,8 +18,13 @@ const { title, color, link } = Astro.props;
 				<div class="frame shadow">
 					<Icon class="loading" name="mingcute:loading-3-fill" />
 					<iframe
-						src={ link }
+						id={link}
 					/>
+					<script define:vars={{ link }}>
+						if (window.innerWidth > 700 && window.innerHeight > 700) {
+							document.getElementById(link).src = link;
+						}
+					</script>
 				</div>
 			</div> : undefined
 	}
