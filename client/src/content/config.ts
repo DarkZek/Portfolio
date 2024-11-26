@@ -20,7 +20,7 @@ const projectTiles = defineCollection({
 		title: z.string(),
 		color: z.string(),
 		tags: z.array(z.string()),
-		cover: image()
+		image: image()
 	}),
 });
 

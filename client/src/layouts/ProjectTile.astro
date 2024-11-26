@@ -12,7 +12,7 @@ if (!collectionEntry) {
 	throw new Error('Project not found');
 }
 
-const { title, tags, color, cover } = collectionEntry.data;
+const { title, tags, color, image } = collectionEntry.data;
 const { Content } = await collectionEntry.render()
 
 let TitleComponent;
@@ -52,7 +52,7 @@ switch(collectionEntry.slug) {
 	>
 		<img
 			class="cover shadow"
-			src={cover.src}
+			src={image.src}
 		/>
 	</div>
 </tile>
