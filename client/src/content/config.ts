@@ -31,6 +31,7 @@ const projects = defineCollection({
 		title: z.string(),
 		color: z.string(),
 		link: z.string().optional(),
+		description: z.string(),
 	}),
 });
 

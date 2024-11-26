@@ -6,13 +6,22 @@ import sitemap from '@astrojs/sitemap';
 
 import icon from 'astro-icon';
 
+import node from '@astrojs/node';
+
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://marshalldoes.dev',
-    integrations: [mdx(), sitemap(), icon()],
-    markdown: {
-        shikiConfig: {
-            theme: 'github-dark-dimmed',
-        },
-    },
+  site: 'https://marshalldoes.dev',
+  integrations: [mdx(), sitemap(), icon()],
+
+  markdown: {
+      shikiConfig: {
+          theme: 'github-dark-dimmed',
+      },
+  },
+
+  output: 'server',
+
+  adapter: node({
+    mode: 'standalone',
+  }),
 });

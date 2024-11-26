@@ -20,7 +20,7 @@ const { title, color, link } = Astro.props;
 					<iframe
 						id={link}
 					/>
-					<script define:vars={{ link }}>
+					<script is:inline define:vars={{ link }}>
 						if (window.innerWidth > 700 && window.innerHeight > 700) {
 							document.getElementById(link).src = link;
 						}
