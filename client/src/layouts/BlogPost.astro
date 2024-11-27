@@ -8,7 +8,7 @@ import { SITE_TITLE } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, image } = Astro.props;
+const { title, description, pubDate, updatedDate, image, unlisted } = Astro.props;
 ---
 
 <html lang="en">
@@ -62,7 +62,7 @@ const { title, description, pubDate, updatedDate, image } = Astro.props;
 				<div
 					class="hero-image"
 				>
-					{image && <img width={1020} height={510} src={image.src} alt="" transition:name={`blog hero ${image.src} image`} />}
+					{image && <img width={850} src={image.src} alt="" transition:name={`blog hero ${image.src} image`} />}
 				</div>
 				<div class="prose">
 					<div class="title">
@@ -78,6 +78,7 @@ const { title, description, pubDate, updatedDate, image } = Astro.props;
 									</div>
 								)
 							}
+							{ unlisted && '(unlisted)' }
 						</div>
 						<h1
 							transition:name={`blog title ${title}`}
