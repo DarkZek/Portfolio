@@ -1,16 +1,24 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import HomeHeader from '../components/HomeHeader.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { Icon } from 'astro-icon/components'
-import headshotImage from '../img/headshot-popout.webp';
+
+// Get newest blog post
+const posts = (await getCollection('blog'))
+	.sort(
+		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	)
+	.filter((v) => v.data.unlisted !== true);
+
+const newestPost = posts[0];
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} image={newestPost.data.image?.src} />
 	</head>
 	<body>
 		<div class="content">
@@ -39,7 +47,7 @@ import headshotImage from '../img/headshot-popout.webp';
 						</svg>
 					</div>
 					<p>
-						I'm a Front-End Developer with a passion for computer graphics.
+						I'm a Software Engineer with a passion for computer graphics.
 					</p>
 				</div>
 			</main>
