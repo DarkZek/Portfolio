@@ -76,7 +76,7 @@ This is okay for large chunks of work done occassionally but is no substitute fo
 
 <BaselineStatus id="webtransport" />
 
-WebTransport is built on top of HTTP/3, with HTTP/3 utilising
+WebTransport is a way to communicate with a server through the network. It is built on top of HTTP/3, with HTTP/3 utilising
 a new UDP based transport protocol named [QUIC](https://www.chromium.org/quic/) which is the key to its low latency and high throughput networking.
 UDP allows for application level reliability and congestion control, which is a huge improvement over TCP for real-time applications.
 
@@ -97,16 +97,6 @@ These each have their own problems, but WebTransport is built for to solve their
 
 WebTransport works by opening 'channels' between one client and one server where either uni, or bi directional buffers of data are able
 to be transmitted.
-
-----------------------------
-
-### std::thread -> WASM Threads
-
-<BaselineStatus id="shared-everything-threads" />
-
-WebAssembly is single threaded, meaning that you're only able to directly control only one core of your cpu. Websites can't create new threads in WebAssembly like you can natively in C++ or Rust.
-Proposals for being able to spawn threads in WebAssembly are currently still in the [draft proposal stage](https://github.com/WebAssembly/shared-everything-threads).
-This is the largest blocker as most games use some form of multithreading to run without stuttering.
 
 ----------------------------
 
