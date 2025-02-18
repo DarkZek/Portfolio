@@ -52,4 +52,12 @@ const { title, description, image } = Astro.props;
 <ViewTransitions />
 
 <script defer data-domain="marshalldoes.dev" src="https://a.marshalldoes.dev/js/script.file-downloads.hash.outbound-links.js"></script>
-<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+<script>
+declare global {
+interface Window {
+	plausible?: any;
+}
+
+}
+window.plausible = window.plausible || function() { (window.plausible!.q = window.plausible.q || []).push(arguments) }
+</script>
