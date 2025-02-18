@@ -25,7 +25,7 @@ const { Content } = await post.render();
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`${SITE_TITLE} | ${post.data.title}`} description={`${post.data.description.substring(0, 200)}...`} image={post.data.image?.src} />
+		<BaseHead title={`${post.data.title} | ${SITE_TITLE}`} description={`${post.data.description.substring(0, 200)}...`} image={post.data.image?.src} />
 	</head>
 	<body>
 		<div class="content">
