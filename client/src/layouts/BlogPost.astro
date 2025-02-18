@@ -88,9 +88,34 @@ const { title, description, pubDate, updatedDate, image, unlisted } = Astro.prop
 						<hr />
 					</div>
 					<slot />
+					<section class="giscus mx-auto mt-10 w-full"></section>
+					<script src="https://giscus.app/client.js"
+						data-repo="darkzek/portfolio"
+						data-repo-id="R_kgDONQ_Mpw"
+						data-category="Blog Post Comments"
+						data-category-id="DIC_kwDONQ_Mp84CnEGJ"
+						data-mapping="url"
+						data-strict="0"
+						data-reactions-enabled="1"
+						data-emit-metadata="0"
+						data-input-position="bottom"
+						data-theme="light"
+						data-lang="en"
+						data-loading="lazy"
+						crossorigin="anonymous"
+						async>
+				</script>
 				</div>
 			</article>
 		</main>
 		<Footer />
 	</body>
 </html>
+<style is:global>
+	.baseline-status {
+		margin: 22px 0px;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		margin-top: 3rem;
+	}
+</style>

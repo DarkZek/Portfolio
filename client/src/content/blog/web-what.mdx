@@ -1,44 +1,57 @@
 ---
-title: 'Web What? - The tech behind games in browsers'
+title: 'Web What? - How gaming is coming to browsers'
 description: 'With the rise of WebAssembly and compatibility with virtually any device, games in web browsers are becoming more popular. But there''s still some large challenges to supporting the platform you should know.'
-pubDate: 'Nov 27 2024'
+pubDate: 'Feb 18 2025'
 image: './web-what.png'
 ---
 
 import { BaselineStatus, LinkPreview } from 'astro-embed'
 import { Image } from 'astro:assets';
 import WebtransportImage from '../../img/web-what-webtransport.png'
+import WebassemblyImage from '../../img/web-what-webassembly.png'
 
-The days of browsers being a image and text rendering engine are gone, the web is constantly evolving and browsers are becoming more and more capable of running complex applications.
+With the rise of WebAssembly and compatibility with virtually any device, games in web browsers are becoming more popular. The days of browsers being a image and text rendering engine are gone, the web is constantly evolving and browsers are becoming more and more capable of running complex applications.
 
-Browsers have been hard at work in the last couple of years trying replicate native platform technologies in a safe and restricted manner to allow us to make games, but not allow malware to exploit. Here's a collection of what they have done
+Browsers have been hard at work in the last couple of years trying replicate native platform technologies in a safe and restricted manner to allow us to use browsers for more advanced use cases while maintaining strict security standards.
+This is especially exciting for the future of game development, as it allows us to run games in the browser with the same performance as native applications. This means better game compatibility, easier distribution, and more players.
+Here's a quick rundown of the technologies that are making this possible:
 
 ### Assembly -> WebAssembly
 
 <BaselineStatus id="wasm" />
 
-WebAssembly, commonly known as wasm is a binary instruction format similar to assembly that runs in the browser,
-allowing developers to write code in any language and compile it to WebAssembly. 
-WebAssembly has great compatibility with all major browsers and allows us to port existing projects to the web, as well as
+WebAssembly, commonly known as wasm is a binary instruction format similar to Assembly that runs in the browser,
+allowing developers to write code in any language and compile it to WebAssembly. It's the 1's and 0's of the web, it 
+provides a foundation on which to run code on the web.
+WebAssembly has great compatibility with all major browsers and allows us to port existing projects to the web, and
 use a single codebase for both native and web applications.
 
 It is important to note that WebAssembly does not provide platform api's that almost any game will need, such as
 audio, input, graphics, networking, threading, etc. These all need to be specially handled for web which is where Web APIs come in.
+
+<Image src={WebassemblyImage} alt="drawing" width="400"/>
+
+----------------------------
 
 ### Vulkan -> WebGPU
 
 <BaselineStatus id="webgpu" />
 
 WebGPU is a graphics API loosely based on Vulkan and Metal that is designed to be a low overhead graphics API
-that can be used to render graphics in the browser. You may be asking "Don't we already have [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API)?" and you'd be right,
+that can be used to render graphics in the browser. This means that we can use hardware acceleration to draw the
+triangles and pixels that make up our games.
+
+Want a demo? Try out Bevy's [WebGPU demo](https://bevyengine.org/examples-webgpu/3d-rendering/motion-blur/)
+
+You may be asking "Don't we already have [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API)?" and you'd be right.
 WebGL has
 [many](https://discussions.unity.com/t/webgl-vs-desktop-unity-vs-js-engine/932348)
-limitations and problems with driver differences causing compatibility problems and poor performance of GL that WebGPU solves.
-
-WebGPU still lacks all of the bells and whistles of a full graphics API like Vulkan or DirectX, such as 
+limitations. It's many problems with drivers causes constant compatibility problems, and poor performance.
+While WebGPU does lacks *all* of the bells and whistles from the likes of Vulkan or DirectX, such as 
 [Mesh Shaders](https://github.com/gpuweb/gpuweb/issues/3015),
 [Hardware Ray Tracing](https://github.com/gpuweb/gpuweb/issues/535),
-[Bindless](https://hackmd.io/PCwnjLyVSqmLfTRSqH0viA?view)
+[Bindless](https://hackmd.io/PCwnjLyVSqmLfTRSqH0viA?view).
+As time continues, these features will be added.
 
 The Chromium team is always hard at work improving WebGPU, give their blog a read if you're interested in the latest updates.
 
@@ -46,15 +59,7 @@ The Chromium team is always hard at work improving WebGPU, give their blog a rea
 
 <br/>
 
-### std::thread -> WASM Threads
-
-<BaselineStatus id="shared-everything-threads" />
-
-WebAssembly is single threaded, meaning that you can't create new threads in WebAssembly like you can natively in C++ or Rust.
-Proposals for being able to spawn threads in WebAssembly are currently still in the [draft proposal stage](https://github.com/WebAssembly/shared-everything-threads).
-This is the largest blocker for many games that rely on multithreading for acceptable performance as it means everything must be
-on the main thread.
-
+----------------------------
 
 ##### Web Workers to the rescue (sort of)
 
@@ -65,27 +70,56 @@ Web Workers initiate an entirely new copy of your application in a separate thre
 thread through a slow `postMessage` request or a [shared buffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer).
 This is okay for large chunks of work done occassionally but is no substitute for a real threading api. 
 
+----------------------------
+
 ### UDP Stream -> WebTransport
 
 <BaselineStatus id="webtransport" />
 
-Browsers support a variety of real-time networking api's:
-
-- [Websockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
-    - Uses TCP which has a high latency penalty
-- [WebRTC](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
-    - Does not leave enough freedom to game as it handles media encoding, reliability, and are hard to make servers for.
-    - Shout out to https://quic.video/blog/replacing-webrtc/
-- [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
-
-These each have their own problems, but WebTransport is built for this problem!
-
 WebTransport is built on top of HTTP/3, with HTTP/3 utilising
 a new UDP based transport protocol named [QUIC](https://www.chromium.org/quic/) which is the key to its low latency and high throughput networking.
-
-This solution is high performance enough that games are able to use the same endpoint as native clients with a native QUIC library. 
+UDP allows for application level reliability and congestion control, which is a huge improvement over TCP for real-time applications.
 
 <Image src={WebtransportImage} alt="drawing" width="400"/>
 
+This solution is high performance enough that games are actually able to use the same server logic for games in the browser as native clients would use. 
+
+Browsers already support a variety of real-time networking api's:
+- [Websockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+    - Uses TCP which has a high latency penalty
+- [WebRTC](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
+    - Is too restrictive as it handles media encoding, reliability, and is difficult to make game servers compatibile with.
+    - Shout out to https://quic.video/blog/replacing-webrtc/
+- [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
+    - Please tell me nobody is using this for real time games
+
+These each have their own problems, but WebTransport is built for to solve their shortcomings.
+
 WebTransport works by opening 'channels' between one client and one server where either uni, or bi directional buffers of data are able
 to be transmitted.
+
+----------------------------
+
+### std::thread -> WASM Threads
+
+<BaselineStatus id="shared-everything-threads" />
+
+WebAssembly is single threaded, meaning that you're only able to directly control only one core of your cpu. Websites can't create new threads in WebAssembly like you can natively in C++ or Rust.
+Proposals for being able to spawn threads in WebAssembly are currently still in the [draft proposal stage](https://github.com/WebAssembly/shared-everything-threads).
+This is the largest blocker as most games use some form of multithreading to run without stuttering.
+
+----------------------------
+
+### std::thread -> WASM Threads
+
+<BaselineStatus id="shared-everything-threads" />
+
+WebAssembly is single threaded, meaning that you're only able to directly control only one core of your cpu. Websites can't create new threads in WebAssembly like you can natively in C++ or Rust.
+Proposals for being able to spawn threads in WebAssembly are currently still in the [draft proposal stage](https://github.com/WebAssembly/shared-everything-threads).
+This is the largest blocker as most games use some form of multithreading to run without stuttering.
+
+----------------------------
+
+It's an exciting future for games in the browser, but there's still some large challenges to overcome before we will see our first mass-market AAA(A) browser game.
+
+Want to be on the leading edge of games with browser tech? Check out [Bevy Engine](https://bevyengine.org/)
