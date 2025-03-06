@@ -61,17 +61,6 @@ The Chromium team is always hard at work improving WebGPU, give their blog a rea
 
 ----------------------------
 
-##### Web Workers to the rescue (sort of)
-
-<BaselineStatus id="js-modules-workers" />
-
-Web Workers are a way to run another copy of your code in a separate thread, this will work for some limited use cases.
-Web Workers initiate an entirely new copy of your application in a separate thread, which is only able to communicate with the main
-thread through a slow `postMessage` request or a [shared buffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer).
-This is okay for large chunks of work done occassionally but is no substitute for a real threading api. 
-
-----------------------------
-
 ### UDP Stream -> WebTransport
 
 <BaselineStatus id="webtransport" />
@@ -107,6 +96,15 @@ to be transmitted.
 WebAssembly is single threaded, meaning that you're only able to directly control only one core of your cpu. Websites can't create new threads in WebAssembly like you can natively in C++ or Rust.
 Proposals for being able to spawn threads in WebAssembly are currently still in the [draft proposal stage](https://github.com/WebAssembly/shared-everything-threads).
 This is the largest blocker as most games use some form of multithreading to run without stuttering.
+
+##### Web Workers to the rescue (sort of)
+
+<BaselineStatus id="js-modules-workers" />
+
+Web Workers are a way to run another copy of your code in a separate thread, this will work for some limited use cases.
+Web Workers initiate an entirely new copy of your application in a separate thread, which is only able to communicate with the main
+thread through a slow `postMessage` request or a [shared buffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer).
+This is okay for large chunks of work done occassionally but is no substitute for a real threading api. 
 
 ----------------------------
 
