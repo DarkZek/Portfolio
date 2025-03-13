@@ -15,7 +15,8 @@ if (!collectionEntry) {
 const { title, tags, color, image } = collectionEntry.data;
 const { Content } = await collectionEntry.render()
 
-let TitleComponent;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+let TitleComponent: any;
 
 switch(collectionEntry.slug) {
 	case 'ruby-sweeps':
