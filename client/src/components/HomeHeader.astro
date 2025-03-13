@@ -40,8 +40,9 @@ const { selected } = Astro.props;
                 </a>
             </div>
             <Icon
-                id="hamburger"
+                id="open-navigation-menu"
                 name="mingcute:menu-line"
+                onclick="openNav()"
             />
         </div>
         <div class="right socials">
@@ -66,12 +67,9 @@ const { selected } = Astro.props;
 <NavigationMenu />
 
 <script>
-    document.addEventListener('astro:page-load', () => {
-        document.getElementById('hamburger')?.addEventListener('click', () => {
-            const nav = document.getElementById('navigation-menu')
-            nav?.setAttribute('open', '')
-        });
-    });
+    (window as any).openNav = () => {
+        document.getElementById('navigation-menu')?.setAttribute('open', '')
+    }
 </script>
 
 <style>
@@ -173,7 +171,7 @@ const { selected } = Astro.props;
     }
 
     @media screen and (max-width: 550px) {
-        #hamburger {
+        #open-navigation-menu {
             display: block !important;
         }
 
@@ -183,7 +181,7 @@ const { selected } = Astro.props;
         
     }
 
-    #hamburger {
+    #open-navigation-menu {
         display: none;
         font-size: 1.8rem;
         color: var(--accent-light);

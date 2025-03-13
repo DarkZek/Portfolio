@@ -12,16 +12,14 @@ import { Icon } from "astro-icon/components"
         id="navigation-close"
         name="mingcute:close-line"
         class="exit"
+        onclick="closeNav()"
     />
 </nav>
 
 <script>
-    document.addEventListener('astro:page-load', () => {
-        document.getElementById('navigation-close')?.addEventListener('click', () => {
-            const nav = document.getElementById('navigation-menu')
-            nav?.removeAttribute('open')
-        });
-    });
+    (window as any).closeNav = () => {
+        document.getElementById('navigation-menu')?.removeAttribute('open')
+    }
 </script>
 
 <style>
@@ -36,6 +34,7 @@ nav {
     padding: 32px;
 
     visibility: hidden;
+    user-select: none;
 
     z-index: 10;
     height: 70px;
@@ -64,6 +63,11 @@ nav {
     right: 24px;
     top: 24px;
     font-size: 24px;
+    cursor: pointer;
+
+    &:hover {
+        color: #c71717;
+    }
 }
 
 </style>
