@@ -28,6 +28,9 @@ switch(collectionEntry.slug) {
 	case 'flixr':
 		TitleComponent = (await import('../components/titles/Flixr.astro')).default;
 		break;
+	case 'peakplay':
+		TitleComponent = (await import('../components/titles/PeakPlay.astro')).default;
+		break;
 }
 ---
 
