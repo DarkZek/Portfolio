@@ -38,40 +38,42 @@ const newestPost = posts[0];
 					</p>
 					<script>
 						import { animate, stagger } from 'animejs';
+						
+						document.addEventListener("astro:page-load", () => {
+							setTimeout(() => {
+								animate('.title', {
+									keyframes: {
+										'0%': { opacity: 0, translateY: '2rem' },
+										'100%': { opacity: 1, translateY: '0rem' },
+									},
+									duration: 500,
+									ease: 'out(2.0)',
+									autoplay: true,
+								});
 
-						setTimeout(() => {
-							animate('.title', {
-								keyframes: {
-									'0%': { opacity: 0, translateY: '2rem' },
-									'100%': { opacity: 1, translateY: '0rem' },
-								},
-								duration: 500,
-								ease: 'out(2.0)',
-								autoplay: true,
-							});
+								animate('.subtitle', {
+									keyframes: {
+										'0%': { opacity: 0, translateY: '2.5rem', color: '#ffffff' },
+										'100%': { opacity: 1, translateY: '0rem', color: '#0b0b0b' },
+									},
+									delay: 20,
+									duration: 500,
+									ease: 'out(2.0)',
+									autoplay: true,
+								});
 
-							animate('.subtitle', {
-								keyframes: {
-									'0%': { opacity: 0, translateY: '2.5rem', color: '#ffffff' },
-									'100%': { opacity: 1, translateY: '0rem', color: '#0b0b0b' },
-								},
-								delay: 20,
-								duration: 500,
-								ease: 'out(2.0)',
-								autoplay: true,
-							});
-
-							animate('.title span', {
-								keyframes: {
-									'0%': { color: '#ffffff' },
-									'100%': { color: '#75A267' },
-								},
-								duration: 500,
-								ease: 'out(2.0)',
-								autoplay: true,
-								delay: stagger(20)
-							});
-						}, 300)
+								animate('.title span', {
+									keyframes: {
+										'0%': { color: '#ffffff' },
+										'100%': { color: '#75A267' },
+									},
+									duration: 500,
+									ease: 'out(2.0)',
+									autoplay: true,
+									delay: stagger(20)
+								});
+							}, 300)
+						})
 					</script>
 				</div>
 			</main>
