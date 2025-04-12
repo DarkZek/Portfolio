@@ -25,7 +25,7 @@ const newestPost = posts[0];
 			<div style="position: absolute">
 				<HomeHeader selected="home" absolute={true} />
 			</div>
-			<main>
+			<main class="main-page">
 				<div class="section-1">
 					<div class="title">
 						<h1><span>H</span><span>i</span><span>,</span></h1>
@@ -41,7 +41,7 @@ const newestPost = posts[0];
 
 						document.addEventListener("astro:page-load", () => {
 							setTimeout(() => {
-								animate('.section-1 .title', {
+								animate('.main-page .title', {
 									keyframes: {
 										'0%': { opacity: 0, translateY: '2rem' },
 										'100%': { opacity: 1, translateY: '0rem' },
@@ -51,7 +51,7 @@ const newestPost = posts[0];
 									autoplay: true,
 								});
 
-								animate('.section-1 .subtitle', {
+								animate('.main-page .subtitle', {
 									keyframes: {
 										'0%': { opacity: 0, translateY: '2.5rem', color: '#ffffff' },
 										'100%': { opacity: 1, translateY: '0rem', color: '#0b0b0b' },
@@ -62,7 +62,7 @@ const newestPost = posts[0];
 									autoplay: true,
 								});
 
-								animate('.section-1 .title span', {
+								animate('.main-page .title span', {
 									keyframes: {
 										'0%': { color: '#ffffff' },
 										'100%': { color: '#75A267' },
