@@ -64,13 +64,15 @@ const newestPost = posts[0];
 
 								animate('.main-page .title span', {
 									keyframes: {
-										'0%': { color: '#ffffff' },
-										'100%': { color: '#75A267' },
+										'0%': { color: 'hsla(130, 40%, 82%, 0)' },
+										'55%': { color: 'hsl(255, 40%, 82%)' },
+										'56%': { color: 'hsl(0, 40%, 82%)' },
+										'100%': { color: 'hsl(106, 24%, 52%)' },
 									},
-									duration: 500,
+									duration: 1000,
 									ease: 'out(2.0)',
 									autoplay: true,
-									delay: stagger(20)
+									delay: stagger(20, { start: 100}),
 								});
 							}, 300)
 						})
