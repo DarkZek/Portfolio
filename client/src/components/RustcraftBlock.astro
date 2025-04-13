@@ -1,0 +1,77 @@
+---
+import DirtImage from '../assets/dirt.png';
+import GrassTopImage from '../assets/grass_top.png';
+import GrassSideImage from '../assets/grass_side.png';
+---
+
+<div class="block">
+    <img src={GrassTopImage.src} class="top" />
+    <img src={DirtImage.src} class="bottom" />
+    <img src={GrassSideImage.src} class="front" />
+    <img src={GrassSideImage.src} class="back" />
+    <img src={GrassSideImage.src} class="left" />
+    <img src={GrassSideImage.src} class="right" />
+</div>
+
+<script>
+    import { animate } from 'animejs'
+
+    document.addEventListener("astro:page-load", () => {
+        animate('.block', {
+            keyframes: {
+                '0%': { rotateX: -15, rotateY: 0 },
+                '100%': { rotateX: -15, rotateY: 360 },
+            },
+            rotateY: 360,
+            duration: 8000,
+            ease: 'linear',
+            loop: true,
+        })
+    })
+</script>
+
+<style>
+
+    @property size {
+        syntax: '<length>';
+        inherits: false;
+        initial-value: 100px;
+    }
+
+    .block {
+        --size: 100px;
+
+        width: var(--size);
+        transform-style: preserve-3d;
+        transform-origin: center center;
+
+        img {
+            border-radius: 0px;
+            position: absolute;
+        }
+
+        .top {
+            transform: rotateX(90deg) translateZ(calc(var(--size) / 2));
+        }
+
+        .bottom {
+            transform: rotateX(-90deg) translateZ(calc(var(--size) / 2));
+        }
+
+        .front {
+            transform: rotateY(0deg) translateZ(calc(var(--size) / 2));
+        }
+
+        .back {
+            transform: rotateY(180deg) translateZ(calc(var(--size) / 2));
+        }
+
+        .left {
+            transform: rotateY(-90deg) translateZ(calc(var(--size) / 2));
+        }
+
+        .right {
+            transform: rotateY(90deg) translateZ(calc(var(--size) / 2));
+        }
+    }
+</style>
