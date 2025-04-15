@@ -37,7 +37,7 @@ const newestPost = posts[0];
 						I'm a Software Engineer with a passion for computer graphics & security.
 					</p>
 					<script>
-						import { animate, stagger } from 'animejs';
+						import { animate, stagger } from 'animejs'
 
 						document.addEventListener("astro:page-load", () => {
 							setTimeout(() => {
@@ -83,6 +83,19 @@ const newestPost = posts[0];
 		<Footer />
 	</body>
 </html>
+
+<noscript>
+	<style>
+		/* Fallback to showing the title immediately for no JS */
+		.title h1 {
+			color: var(--accent) !important; 
+		}
+
+		.section-1 p {
+			color: black !important;
+		}
+	</style>
+</noscript>
 
 <style>
 	.content {
