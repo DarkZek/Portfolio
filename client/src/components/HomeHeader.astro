@@ -24,18 +24,21 @@ const { selected } = Astro.props;
                     class={selected === 'home' ? 'selected' : ''}
                     href="/"
                 >
+                    { selected === 'home' ? <div class="background" transition:name="bg"/> : ''}
                     Home
                 </a>
                 <a
                     class={selected === 'blog' ? 'selected' : ''}
                     href="/blog"
                 >
+                    { selected === 'blog' ? <div class="background" transition:name="bg"/> : ''}
                     Blog
                 </a>
                 <a
                     class={selected === 'projects' ? 'selected' : ''}
                     href="/projects"
                 >
+                    { selected === 'projects' ? <div class="background" transition:name="bg"/> : ''}
                     Projects
                 </a>
             </div>
@@ -145,7 +148,6 @@ const { selected } = Astro.props;
     }
 
     .navigation {
-        background-color: #F0F0F0;
         padding: 6px 8px;
         border-radius: 100px;
         display: flex;
@@ -157,15 +159,23 @@ const { selected } = Astro.props;
             border-radius: 100px;
             font-size: 16px;
             user-select: none;
+            position: relative;
 
             &:hover {
                 color: var(--accent);
             }
 
             &.selected {
-                background-color: var(--accent);
                 color: white !important;
+            }
+
+            .background {
+                background-color: var(--accent);
                 box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+                inset: 0px;
+                position: absolute;
+                border-radius: 100px;
+                z-index: -1;
             }
         }
     }
