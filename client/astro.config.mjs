@@ -13,6 +13,10 @@ export default defineConfig({
   site: 'https://marshalldoes.dev',
   integrations: [mdx(), sitemap(), icon()],
 
+  prefetch: {
+    prefetchAll: true
+  },
+
   markdown: {
       shikiConfig: {
           theme: 'github-dark-dimmed',

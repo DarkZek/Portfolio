@@ -14,6 +14,7 @@ const { selected } = Astro.props;
             <a
                 class="name"
                 href="/"
+                data-astro-prefetch
             >
                 Marshall Scott
             </a>
@@ -23,6 +24,7 @@ const { selected } = Astro.props;
                 <a
                     class={selected === 'home' ? 'selected' : ''}
                     href="/"
+                    data-astro-prefetch="load"
                 >
                     { selected === 'home' ? <div class="background" transition:name="bg"/> : ''}
                     Home
@@ -30,6 +32,7 @@ const { selected } = Astro.props;
                 <a
                     class={selected === 'blog' ? 'selected' : ''}
                     href="/blog"
+                    data-astro-prefetch="load"
                 >
                     { selected === 'blog' ? <div class="background" transition:name="bg"/> : ''}
                     Blog
@@ -37,6 +40,7 @@ const { selected } = Astro.props;
                 <a
                     class={selected === 'projects' ? 'selected' : ''}
                     href="/projects"
+                    data-astro-prefetch="load"
                 >
                     { selected === 'projects' ? <div class="background" transition:name="bg"/> : ''}
                     Projects
