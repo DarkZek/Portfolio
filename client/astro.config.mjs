@@ -8,6 +8,9 @@ import icon from 'astro-icon';
 
 import node from '@astrojs/node';
 
+import wasm from "vite-plugin-wasm";
+import topLevelAwait from "vite-plugin-top-level-await";
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://marshalldoes.dev',
@@ -24,13 +27,17 @@ export default defineConfig({
   },
 
   vite: {
+    plugins: [
+      wasm(),
+      topLevelAwait()
+    ],
     css: {
         preprocessorOptions: {
             scss: {
                 api: "modern-compiler"
             }
         }
-    }
+    },
   },
 
   output: 'server',
