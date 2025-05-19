@@ -19,17 +19,11 @@ const { Content } = await collectionEntry.render()
 let TitleComponent: any;
 
 switch(collectionEntry.slug) {
-	case 'ruby-sweeps':
-		TitleComponent = (await import('../components/titles/RubySweeps.astro')).default;
-		break;
 	case 'rustcraft':
 		TitleComponent = (await import('../components/titles/Rustcraft.astro')).default;
 		break;
 	case 'flixr':
 		TitleComponent = (await import('../components/titles/Flixr.astro')).default;
-		break;
-	case 'peakplay':
-		TitleComponent = (await import('../components/titles/PeakPlay.astro')).default;
 		break;
 }
 ---
