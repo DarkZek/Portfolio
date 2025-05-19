@@ -18,6 +18,30 @@ It features an Entity Component System (ECS) based rendering system, threaded ne
 mesh building, asset management, <u>render engine</u> and AABB physics engine
 with the goal of making performance problems in voxel games a problem of the past.
 
+### Features
+- **ECS** - Based on an Entity Component System (ECS) architecture, allowing for flexible and efficient game object management.
+- **Networking** - Custom networking protocol capabilities utilising Http3's Webtransport API for low latency and high throughput networking for Web clients.
+- **Voxel Rendering** - High performance voxel rendering using a custom mesh builder.
+- **Physics** - Custom physics engine for efficient voxel collision detection.
+
+### Technologies Used
+- **Website**: Vue.js
+- **Client**: Rust, Bevy, Webtransport
+- **Server**: Rust, Docker
+
+### Making Of
+
+RustCraft has taken countless hours of work, learning low-level programming concepts and
+technologies. It has been a journey of learning and exploration, so I documented the journey
+in the form of this video on YouTube.
+
+import { YouTube } from 'astro-embed';
+
+<YouTube id="https://www.youtube.com/embed/r3HJ04u0-2Q" posterQuality="max" />
+
+If you want to see more, check out my blog post on the mid-project review of RustCraft
+[here](/blog/rustcraft-mid-project-review).
+
 #### History
 
 RustCraft has been through many iterations and rewrites where the technology stack has changed,
