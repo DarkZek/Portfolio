@@ -1,0 +1,115 @@
+<script>
+import 'q5';
+import { Pheremone, PheromoneType } from './pheremones'
+
+const q = await Q5.WebGPU()
+
+const canvasSize = 600;
+const pheremonesSize = 30;
+const debugging = true
+
+const antSpeed = 2.0;
+const antChangeDirectionChance = 0.001;
+const antPheremoneDirectionMinStrength = 0.01;
+const antPheremoneDirectionMaxStrength = 0.03;
+
+createCanvas(canvasSize, canvasSize, {
+    alpha: true
+})
+
+type Ant = {
+    x: number;
+    y: number;
+    angle: number;
+}
+
+const pheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize, {
+    format: 'rg32float',
+    filter: 'linear'
+}), pheremonesSize / canvasSize);
+
+const ants: Ant[] = []
+
+// Initialize ants
+for (let i = 0; i < 500; i++) {
+    ants.push({
+        x: random(width),
+        y: random(height),
+        angle: random(TWO_PI)
+    });
+}
+
+function simulateAnts() {
+    // Move forward
+    for (const ant of ants) {
+        // Move forward
+        ant.x += Math.cos(ant.angle) * antSpeed;
+        ant.y += Math.sin(ant.angle) * antSpeed;
+
+        // Wrap around the canvas
+        if (ant.x < 0) ant.x += width;
+        if (ant.x > width) ant.x -= width;
+        if (ant.y < 0) ant.y += height;
+        if (ant.y > height) ant.y -= height;
+
+        // Randomly change direction
+        if (random() < antChangeDirectionChance * deltaTime) {
+            ant.angle += random(-PI / 2, PI / 2);
+        }
+    }
+
+    // Get current pheromone values and apply to ants
+    for (const ant of ants) {
+        
+        const pheromoneValue = pheremones.getPheromone(ant.x, ant.y);
+        
+        // If pheromone value is high, turn towards it
+        if (pheromoneValue[PheromoneType.HOME].strength > 0.1) {
+            ant.angle = lerp(
+                ant.angle,
+                pheromoneValue[PheromoneType.HOME].angle,
+                random(antPheremoneDirectionMinStrength, antPheremoneDirectionMaxStrength) * deltaTime // Adjust angle towards pheromone
+            )
+        }
+    }
+
+    // Add pheromone trails
+    for (const ant of ants) {
+        pheremones.addPheromone(ant.x, ant.y, ant.angle, PheromoneType.HOME);
+    }
+}
+
+q.draw = () => {
+    clear()
+
+    noStroke()
+
+    simulateAnts()
+
+    // Zero the canvas
+    translate(-canvasSize/2, -canvasSize/2);
+
+    pheremones.image.updatePixels()
+
+    if (debugging) {
+        background(pheremones.image);
+    }
+
+    pheremones.fadePheremones()
+
+    // Draw all ants
+    for (const ant of ants) {
+        push();
+        translate(ant.x, ant.y);
+        rotate(ant.angle);
+        fill(color(0, 0, 0));
+        ellipse(0, 0, 8, 4);
+        pop();
+    }
+
+    // Zero the canvas
+    translate(canvasSize/2, canvasSize/2);
+}
+
+
+</script>
