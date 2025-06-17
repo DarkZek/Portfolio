@@ -6,14 +6,8 @@ export enum PheromoneType {
 }
 
 export type PheremoneData = {
-    [PheromoneType.HOME]: {
-        angle: number;
-        strength: number;
-    },
-    // [PheromoneType.FOOD]: {
-    //     angle: number;
-    //     strength: number;
-    // }
+    angle: number;
+    strength: number;
 }
 
 export class Pheremone {
@@ -32,56 +26,59 @@ export class Pheremone {
 
         for (let x = 0; x < this.image.width; x += 1) {
             for (let y = 0; y < this.image.height; y += 1) {
-                this.image.set(x, y, color(0, 0, 0, 255)); // Clear the pheromone image
+                this.setData(x, y, [0, 0]); // Clear the pheromone image
             }
         }
 
         this.image.updatePixels();
     }
 
-    addPheromone(x: number, y: number, angle: number, type: PheromoneType) {
-        const imageData = this.image.get(x * this.scale, y * this.scale)
+    private getData(x: number, y: number): [number, number] {
+        const imageData = this.image.get(x, y)
+        return [imageData[0], imageData[1]];
+    }
 
-        const [red, green] = imageData
+    private setData(x: number, y: number, data: [number, number]) {
+        this.image.set(x, y, color(data[0], data[1], 0, 255));
+    }
+
+    addPheromone(x: number, y: number, angle: number) {
+        const [red, green] = this.getData(x * this.scale, y * this.scale);
 
         let strength = red / 255; // Normalize the strength to a value between 0 and 1
+
+        const existingAngle = (green / 255) * TWO_PI; // Normalize the angle to a value between 0 and TWO_PI
+        let newAngle = lerp(existingAngle, angle % TWO_PI, 0.32);
+
+        if (strength === 0) {
+            newAngle = angle
+        }
+
         strength += 0.1; // Increase the strength by 0.1
 
-        const existingAngle = green / 255 * TWO_PI; // Normalize the angle to a value between 0 and TWO_PI
-        const newAngle = lerp(existingAngle, angle, 0.5);
-
-        const newColor = color(strength * 255, newAngle / TWO_PI * 255, 0, 255)
-
-        this.image.set(x * this.scale, y * this.scale, newColor); // Update the pheromone image
+        this.setData(x * this.scale, y * this.scale, [strength * 255, newAngle / TWO_PI * 255]); // Update the pheromone image
     }
 
     getPheromone(x: number, y: number): PheremoneData {
-        const imageData = this.image.get(x * this.scale, y * this.scale)
-
-        const [red, green] = imageData
+        const [red, green] = this.getData(x * this.scale, y * this.scale);
 
         const strength = red / 255; // Normalize the strength to a value between 0 and 1
         const angle = green / 255 * TWO_PI; // Normalize the angle to a value between 0 and TWO_PI
  
         return {
-            [PheromoneType.HOME]: {
-                angle: angle,
-                strength: strength
-            }
+            angle: angle,
+            strength: strength
         }
     }
 
     fadePheremones() {
-
         this.image.loadPixels();
 
         for (let x = 0; x < this.image.width; x += 1) {
             for (let y = 0; y < this.image.height; y += 1) {
-                const imageData = this.image.get(x, y)
-                const [red, green] = imageData
+                const [red, green] = this.getData(x, y);
                 
-                const newColor = color(red - 1, green, 0, 255)
-                this.image.set(x, y, newColor); // Update the pheromone image
+                this.setData(x, y, [red - 0.6, green]); // Update the pheromone image
             }
         }
 

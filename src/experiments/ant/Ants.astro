@@ -1,17 +1,22 @@
+<input type="checkbox" oninput="window.debugging = this.checked" />
+<label for="debugging">Debugging</label>
+
 <script>
 import 'q5';
-import { Pheremone, PheromoneType } from './pheremones'
+import { Pheremone, type PheremoneData } from './pheremones'
 
 const q = await Q5.WebGPU()
 
 const canvasSize = 600;
-const pheremonesSize = 30;
-const debugging = true
+const pheremonesSize = 80;
+const antCount = 10_000
 
-const antSpeed = 2.0;
-const antChangeDirectionChance = 0.001;
+const antSpeed = 0.1;
+const antChangeDirectionChance = 0.002;
 const antPheremoneDirectionMinStrength = 0.01;
-const antPheremoneDirectionMaxStrength = 0.03;
+const antPheremoneDirectionMaxStrength = 0.02;
+
+const antFoodDetectionRadius = 60;
 
 createCanvas(canvasSize, canvasSize, {
     alpha: true
@@ -21,62 +26,164 @@ type Ant = {
     x: number;
     y: number;
     angle: number;
+    hasFood: boolean;
+    rotate(angle: number): void
+    nearNest: boolean;
+    nearFood: boolean;
 }
 
-const pheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize, {
+const homePheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize, {
     format: 'rg32float',
     filter: 'linear'
 }), pheremonesSize / canvasSize);
 
+const foodPheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize, {
+    format: 'rg32float',
+    filter: 'linear'
+}), pheremonesSize / canvasSize);
+
+const nest = {
+    x: 150,
+    y: 150,
+    radius: 80
+}
+const food = {
+    x: 450,
+    y: 450,
+    radius: 60
+}
+
 const ants: Ant[] = []
 
 // Initialize ants
-for (let i = 0; i < 500; i++) {
+for (let i = 0; i < antCount; i++) {
     ants.push({
         x: random(width),
         y: random(height),
-        angle: random(TWO_PI)
+        angle: random(TWO_PI),
+        hasFood: false,
+        rotate: function(angle: number) {
+            this.angle += angle;
+            this.angle %= TWO_PI;
+            if (this.angle < 0) {
+                this.angle += TWO_PI;
+            }
+        },
+        nearNest: false,
+        nearFood: false
     });
+}
+
+function eatFood(ant: Ant) {
+    // Check if the ant is at a food source, assume its at (width/2, height/2)
+    if (dist(ant.x, ant.y, food.x, food.y) < food.radius && !ant.hasFood) {
+        ant.hasFood = true;
+
+        // Rotate 180 degrees to face home
+        ant.rotate(PI);
+    }
+}
+
+function moveAnt(ant: Ant) {
+    // Move forward
+    ant.x += Math.cos(ant.angle) * antSpeed * deltaTime;
+    ant.y += Math.sin(ant.angle) * antSpeed * deltaTime;
+
+    // Wrap around edges
+    if (ant.x < 0) ant.x += width;
+    if (ant.x > width) ant.x -= width;
+    if (ant.y < 0) ant.y += height;
+    if (ant.y > height) ant.y -= height;
+
+    // Randomly change direction
+    if (random() < antChangeDirectionChance * deltaTime) {
+        ant.rotate(random(-PI / 2, PI / 2));
+    }
 }
 
 function simulateAnts() {
     // Move forward
     for (const ant of ants) {
-        // Move forward
-        ant.x += Math.cos(ant.angle) * antSpeed;
-        ant.y += Math.sin(ant.angle) * antSpeed;
+        
+        ant.nearNest = false;
+        ant.nearFood = false;
 
-        // Wrap around the canvas
-        if (ant.x < 0) ant.x += width;
-        if (ant.x > width) ant.x -= width;
-        if (ant.y < 0) ant.y += height;
-        if (ant.y > height) ant.y -= height;
-
-        // Randomly change direction
-        if (random() < antChangeDirectionChance * deltaTime) {
-            ant.angle += random(-PI / 2, PI / 2);
+        // Drop off food
+        if (ant.hasFood) {
+            moveTowardsNest(ant)
+            dropFoodAtNest(ant);
+        } else {
+            moveTowardsFood(ant)
+            eatFood(ant);
         }
-    }
 
-    // Get current pheromone values and apply to ants
-    for (const ant of ants) {
+        moveAnt(ant);
         
-        const pheromoneValue = pheremones.getPheromone(ant.x, ant.y);
+        // Get current pheromone values and apply to ants
+        let pheromoneValue: PheremoneData
+
+        if (!ant.hasFood) {
+            pheromoneValue = foodPheremones.getPheromone(ant.x, ant.y);
+        } else {
+            pheromoneValue = homePheremones.getPheromone(ant.x, ant.y);
+        }
         
-        // If pheromone value is high, turn towards it
-        if (pheromoneValue[PheromoneType.HOME].strength > 0.1) {
+        // If pheromone value is high, turn towards it, ignore pheremone if they have a target
+        if (pheromoneValue.strength > 0.1) {
+            let targetAngle = (TWO_PI - pheromoneValue.angle) % TWO_PI; // Invert angle to face the pheromone
+            if (targetAngle < 0) {
+                targetAngle += TWO_PI;
+            }
             ant.angle = lerp(
                 ant.angle,
-                pheromoneValue[PheromoneType.HOME].angle,
+                targetAngle,
                 random(antPheremoneDirectionMinStrength, antPheremoneDirectionMaxStrength) * deltaTime // Adjust angle towards pheromone
-            )
+            ) % TWO_PI;
         }
+        
+        // Add pheromone trails
+        if (ant.hasFood) {
+            foodPheremones.addPheromone(ant.x, ant.y, ant.angle);
+        } else {
+            homePheremones.addPheromone(ant.x, ant.y, ant.angle);
+        }
+
     }
 
-    // Add pheromone trails
-    for (const ant of ants) {
-        pheremones.addPheromone(ant.x, ant.y, ant.angle, PheromoneType.HOME);
+}
+
+function dropFoodAtNest(ant: Ant) {
+    // Check if the ant is at the nest, assume its at (0, 0)
+    if (dist(ant.x, ant.y, nest.x, nest.y) < nest.radius && ant.hasFood) {
+        ant.hasFood = false;
+
+        // Rotate 180 degrees to face food source
+        ant.rotate(PI);
     }
+}
+
+function moveTowardsFood(ant: Ant) {
+    // If the ant is within distance of the food, it will move towards it
+    if (dist(ant.x, ant.y, food.x, food.y) > food.radius + antFoodDetectionRadius) {
+        // Doesn't know where the food is, so it will just wander around
+        return;
+    }
+    ant.nearFood = true;
+    // Move towards food
+    const angleToFood = Math.atan2(food.y - ant.y, food.x - ant.x);
+    ant.angle = lerp(ant.angle, angleToFood, 0.8) % TWO_PI;
+}
+
+function moveTowardsNest(ant: Ant) {
+    // If the ant is within distance of the nest, it will move towards it
+    if (dist(ant.x, ant.y, nest.x, nest.y) > nest.radius + antFoodDetectionRadius) {
+        // Doesn't know where the food is, so it will just wander around
+        return;
+    }
+    ant.nearNest = true;
+    // Move towards food
+    const angleToNest = Math.atan2(nest.y - ant.y, nest.x - ant.x);
+    ant.angle = lerp(ant.angle, angleToNest, 0.8) % TWO_PI;
 }
 
 q.draw = () => {
@@ -85,25 +192,47 @@ q.draw = () => {
     noStroke()
 
     simulateAnts()
+    simulateAnts()
 
     // Zero the canvas
     translate(-canvasSize/2, -canvasSize/2);
 
-    pheremones.image.updatePixels()
+    homePheremones.image.updatePixels()
+    foodPheremones.image.updatePixels()
 
-    if (debugging) {
-        background(pheremones.image);
+    // Spread around the pheromones every 50 frames
+    if (frameCount % 60 === 0) {
+        homePheremones.image.filter(BLUR, 0.5)
+        foodPheremones.image.filter(BLUR, 0.5)
     }
 
-    pheremones.fadePheremones()
+    if ((window as any).debugging) {
+        background(homePheremones.image);
+    }
+
+    noFill()
+    stroke(color(255, 0, 0));
+    circle(nest.x, nest.y, nest.radius * 2);
+    noStroke()
+
+    stroke(color(0, 255, 0));
+    circle(food.x, food.y, food.radius * 2);
+    noStroke()
+
+    homePheremones.fadePheremones()
+    foodPheremones.fadePheremones()
 
     // Draw all ants
     for (const ant of ants) {
         push();
         translate(ant.x, ant.y);
         rotate(ant.angle);
-        fill(color(0, 0, 0));
-        ellipse(0, 0, 8, 4);
+        if (ant.hasFood) {
+            fill(color(255, 0, 0)); // Red if carrying food
+        } else {
+            fill(color(0, 0, 0)); // Black if not carrying food
+        }
+        ellipse(0, 0, 4, 2);
         pop();
     }
 
