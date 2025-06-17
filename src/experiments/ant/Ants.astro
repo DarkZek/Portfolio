@@ -16,7 +16,7 @@ const antChangeDirectionChance = 0.002;
 const antPheremoneDirectionMinStrength = 0.01;
 const antPheremoneDirectionMaxStrength = 0.02;
 
-const antFoodDetectionRadius = 60;
+const antFoodDetectionRadius = 40;
 
 createCanvas(canvasSize, canvasSize, {
     alpha: true
@@ -57,9 +57,17 @@ const ants: Ant[] = []
 
 // Initialize ants
 for (let i = 0; i < antCount; i++) {
+
+    // Generate a random position near the nest
+    const angle = random(TWO_PI);
+    const distance = random(nest.radius * 0.5, nest.radius);
+    
+    const x = nest.x + Math.cos(angle) * distance;
+    const y = nest.y + Math.sin(angle) * distance;
+
     ants.push({
-        x: random(width),
-        y: random(height),
+        x,
+        y,
         angle: random(TWO_PI),
         hasFood: false,
         rotate: function(angle: number) {
