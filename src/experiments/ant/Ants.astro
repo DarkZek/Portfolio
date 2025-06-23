@@ -1,22 +1,40 @@
 <input type="checkbox" oninput="window.debugging = this.checked" />
 <label for="debugging">Debugging</label>
 
+<style lang="scss" is:global>
+    #q5Canvas0 {
+        border-radius: 300px;
+    }
+</style>
+
 <script>
 import 'q5';
 import { Pheremone, type PheremoneData } from './pheremones'
 
-const q = await Q5.WebGPU()
+let q
+
+if ((navigator as any).gpu) {
+    q = await Q5.WebGPU()
+} else {
+    q = await new Q5()
+}
 
 const canvasSize = 600;
-const pheremonesSize = 80;
-const antCount = 10_000
+const pheremonesSize = 100;
+const antCount = 20_000
 
-const antSpeed = 0.1;
-const antChangeDirectionChance = 0.002;
-const antPheremoneDirectionMinStrength = 0.01;
-const antPheremoneDirectionMaxStrength = 0.02;
+const antSpeed = 0.2;
+const antChangeDirectionChance = 0.001;
+const antPheremoneDirectionMinStrength = 0.005;
+const antPheremoneDirectionMaxStrength = 0.015;
+const antColor = color(0, 0, 0);
 
-const antFoodDetectionRadius = 40;
+const foodDetectionRadius = 40;
+// How many times can one pixel be eaten
+const foodStrength = 1;
+const foodColor = color(117, 162, 103)
+
+let remainingFood = true;
 
 createCanvas(canvasSize, canvasSize, {
     alpha: true
@@ -27,30 +45,22 @@ type Ant = {
     y: number;
     angle: number;
     hasFood: boolean;
-    rotate(angle: number): void
     nearNest: boolean;
     nearFood: boolean;
 }
 
-const homePheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize, {
-    format: 'rg32float',
-    filter: 'linear'
-}), pheremonesSize / canvasSize);
+const homePheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize), pheremonesSize / canvasSize);
 
-const foodPheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize, {
-    format: 'rg32float',
-    filter: 'linear'
-}), pheremonesSize / canvasSize);
+const foodPheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize), pheremonesSize / canvasSize);
+
+const foodTexture = createImage(canvasSize, canvasSize)
+
+foodTexture.updatePixels();
 
 const nest = {
-    x: 150,
-    y: 150,
-    radius: 80
-}
-const food = {
-    x: 450,
-    y: 450,
-    radius: 60
+    x: 300,
+    y: 500,
+    radius: 50
 }
 
 const ants: Ant[] = []
@@ -60,7 +70,7 @@ for (let i = 0; i < antCount; i++) {
 
     // Generate a random position near the nest
     const angle = random(TWO_PI);
-    const distance = random(nest.radius * 0.5, nest.radius);
+    const distance = random(0, nest.radius);
     
     const x = nest.x + Math.cos(angle) * distance;
     const y = nest.y + Math.sin(angle) * distance;
@@ -70,25 +80,60 @@ for (let i = 0; i < antCount; i++) {
         y,
         angle: random(TWO_PI),
         hasFood: false,
-        rotate: function(angle: number) {
-            this.angle += angle;
-            this.angle %= TWO_PI;
-            if (this.angle < 0) {
-                this.angle += TWO_PI;
-            }
-        },
         nearNest: false,
         nearFood: false
     });
 }
 
+// Initialize food texture with random food pixels
+const ctx = foodTexture.ctx;
+
+ctx.textBaseline = "middle";
+ctx.textAlign = "center";
+ctx.font = "bold 120px Arial";
+ctx.fillStyle = `rgb(${foodColor.levels[0]}, ${foodColor.levels[1]}, ${foodColor.levels[2]})`;
+ctx.fillText("Marshall", canvasSize / 2, canvasSize / 2);
+
+function checkRemainingFood() {
+    let remainingFoodPixels = 0
+
+    foodTexture.loadPixels();
+
+    for (let i = 0; i < foodTexture.pixels.length; i += 4) {
+        if (foodTexture.pixels[i + 3] > 0) {
+            remainingFoodPixels += 1;
+        }
+    }
+
+    if (remainingFoodPixels < 1000) {
+        remainingFood = false;
+    } else {
+        remainingFood = true;
+    }
+}
+
 function eatFood(ant: Ant) {
-    // Check if the ant is at a food source, assume its at (width/2, height/2)
-    if (dist(ant.x, ant.y, food.x, food.y) < food.radius && !ant.hasFood) {
+
+    // Check if ant is on food pixel
+    const foodPixelColor = foodTexture.get(ant.x, ant.y)
+    const isOnFood = foodPixelColor[3] > 0
+
+    // If the ant is close enough to the food and the food pixel is not transparent
+    if (isOnFood && !ant.hasFood) {
         ant.hasFood = true;
 
         // Rotate 180 degrees to face home
-        ant.rotate(PI);
+        rotateAnt(ant, PI);
+
+        foodTexture.set(ant.x, ant.y, color(255, 255, 255, foodPixelColor[3] - ( 255 / foodStrength ))); // Remove food pixel
+    }
+}
+
+function rotateAnt(ant: Ant, angle: number) {
+    ant.angle += angle;
+    ant.angle %= TWO_PI;
+    if (ant.angle < 0) {
+        ant.angle += TWO_PI;
     }
 }
 
@@ -105,7 +150,7 @@ function moveAnt(ant: Ant) {
 
     // Randomly change direction
     if (random() < antChangeDirectionChance * deltaTime) {
-        ant.rotate(random(-PI / 2, PI / 2));
+        rotateAnt(ant, random(-PI / 2, PI / 2));
     }
 }
 
@@ -121,7 +166,6 @@ function simulateAnts() {
             moveTowardsNest(ant)
             dropFoodAtNest(ant);
         } else {
-            moveTowardsFood(ant)
             eatFood(ant);
         }
 
@@ -156,6 +200,7 @@ function simulateAnts() {
             homePheremones.addPheromone(ant.x, ant.y, ant.angle);
         }
 
+        endSimulation(ant)
     }
 
 }
@@ -166,40 +211,52 @@ function dropFoodAtNest(ant: Ant) {
         ant.hasFood = false;
 
         // Rotate 180 degrees to face food source
-        ant.rotate(PI);
+        rotateAnt(ant, PI);
     }
-}
-
-function moveTowardsFood(ant: Ant) {
-    // If the ant is within distance of the food, it will move towards it
-    if (dist(ant.x, ant.y, food.x, food.y) > food.radius + antFoodDetectionRadius) {
-        // Doesn't know where the food is, so it will just wander around
-        return;
-    }
-    ant.nearFood = true;
-    // Move towards food
-    const angleToFood = Math.atan2(food.y - ant.y, food.x - ant.x);
-    ant.angle = lerp(ant.angle, angleToFood, 0.8) % TWO_PI;
 }
 
 function moveTowardsNest(ant: Ant) {
+    const angleToNest = Math.atan2(nest.y - ant.y, nest.x - ant.x);
+    ant.angle = lerp(ant.angle, angleToNest, 0.02) % TWO_PI;
+
     // If the ant is within distance of the nest, it will move towards it
-    if (dist(ant.x, ant.y, nest.x, nest.y) > nest.radius + antFoodDetectionRadius) {
+    if (dist(ant.x, ant.y, nest.x, nest.y) > nest.radius + foodDetectionRadius) {
         // Doesn't know where the food is, so it will just wander around
         return;
     }
     ant.nearNest = true;
     // Move towards food
+    ant.angle = lerp(ant.angle, angleToNest, 0.2) % TWO_PI;
+}
+
+function endSimulation(ant: Ant) {
+    if (remainingFood === true) {
+        return
+    }
+
+    // Return ants to nest
     const angleToNest = Math.atan2(nest.y - ant.y, nest.x - ant.x);
-    ant.angle = lerp(ant.angle, angleToNest, 0.8) % TWO_PI;
+    ant.angle = lerp(ant.angle, angleToNest, 0.16) % TWO_PI;
+
+    // If the ant is at the nest, it will die
+    if (dist(ant.x, ant.y, nest.x, nest.y) < nest.radius) {
+        // Remove the ant from the array
+        const index = ants.indexOf(ant);
+        if (index > -1) {
+            ants.splice(index, 1);
+        }
+    }
 }
 
 q.draw = () => {
+    if (ants.length === 0) {
+        return
+    }
+
     clear()
 
     noStroke()
 
-    simulateAnts()
     simulateAnts()
 
     // Zero the canvas
@@ -207,40 +264,31 @@ q.draw = () => {
 
     homePheremones.image.updatePixels()
     foodPheremones.image.updatePixels()
+    foodTexture.updatePixels();
 
-    // Spread around the pheromones every 50 frames
-    if (frameCount % 60 === 0) {
-        homePheremones.image.filter(BLUR, 0.5)
-        foodPheremones.image.filter(BLUR, 0.5)
-    }
+    checkRemainingFood()
 
     if ((window as any).debugging) {
-        background(homePheremones.image);
+        background(foodPheremones.image);
     }
 
-    noFill()
-    stroke(color(255, 0, 0));
-    circle(nest.x, nest.y, nest.radius * 2);
-    noStroke()
-
-    stroke(color(0, 255, 0));
-    circle(food.x, food.y, food.radius * 2);
-    noStroke()
+    background(foodTexture)
 
     homePheremones.fadePheremones()
     foodPheremones.fadePheremones()
+
+    noStroke()
 
     // Draw all ants
     for (const ant of ants) {
         push();
         translate(ant.x, ant.y);
         rotate(ant.angle);
-        if (ant.hasFood) {
-            fill(color(255, 0, 0)); // Red if carrying food
-        } else {
-            fill(color(0, 0, 0)); // Black if not carrying food
-        }
-        ellipse(0, 0, 4, 2);
+
+        fill(antColor);
+        
+        ellipse(0, 0, 2, 1);
+
         pop();
     }
 

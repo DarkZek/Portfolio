@@ -48,7 +48,7 @@ export class Pheremone {
         let strength = red / 255; // Normalize the strength to a value between 0 and 1
 
         const existingAngle = (green / 255) * TWO_PI; // Normalize the angle to a value between 0 and TWO_PI
-        let newAngle = lerp(existingAngle, angle % TWO_PI, 0.32);
+        let newAngle = lerp(existingAngle, angle % TWO_PI, 0.22);
 
         if (strength === 0) {
             newAngle = angle
@@ -83,5 +83,10 @@ export class Pheremone {
         }
 
         this.image.updatePixels()
+    }
+
+    // Spread pheromones by applying a blur filter
+    spreadPheremones() {
+        this.image.filter(BLUR, 0.2)
     }
 }
