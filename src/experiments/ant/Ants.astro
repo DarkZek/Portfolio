@@ -53,11 +53,11 @@ type Ant = {
     nearFood: boolean;
 }
 
-const homePheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize), pheremonesSize / canvasSize);
+const homePheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize, { willReadFrequently: true }), pheremonesSize / canvasSize);
 
-const foodPheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize), pheremonesSize / canvasSize);
+const foodPheremones = new Pheremone(createImage(pheremonesSize, pheremonesSize, { willReadFrequently: true }), pheremonesSize / canvasSize);
 
-const foodTexture = createImage(canvasSize, canvasSize)
+const foodTexture = createImage(canvasSize, canvasSize, { willReadFrequently: true })
 
 foodTexture.updatePixels();
 
