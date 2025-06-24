@@ -26,7 +26,7 @@ const canvasSize = 600;
 const pheremonesSize = 60;
 const antCount = 20_000
 
-const antSpeed = 0.2;
+const antSpeed = 1.75;
 const antChangeDirectionChance = 0.001;
 const antPheremoneDirectionMinStrength = 0.01;
 const antPheremoneDirectionMaxStrength = 0.03;
@@ -137,8 +137,8 @@ function rotateAnt(ant: Ant, angle: number) {
 
 function moveAnt(ant: Ant) {
     // Move forward
-    ant.x += Math.cos(ant.angle) * antSpeed * deltaTime;
-    ant.y += Math.sin(ant.angle) * antSpeed * deltaTime;
+    ant.x += Math.cos(ant.angle) * antSpeed;
+    ant.y += Math.sin(ant.angle) * antSpeed;
 
     // Wrap around edges
     if (ant.x < 0) ant.x += width;
