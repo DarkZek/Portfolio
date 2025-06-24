@@ -1,4 +1,4 @@
-import 'q5';
+import { lerp, TWO_PI } from './utils';
 
 export enum PheromoneType {
     FOOD = 0,
@@ -11,36 +11,47 @@ export type PheremoneData = {
 }
 
 export class Pheremone {
-    public image: Q5.Image;
+
+    public imageData: ImageData
+    public height: number
+    public width: number
     public scale: number
 
-    constructor(image: Q5.Image, scale: number = 0.1) {
-        this.image = image;
+    constructor(height: number, width: number, scale: number = 0.1) {
         this.scale = scale
+        this.height = height
+        this.width = width
+        this.imageData = new ImageData(width, height)
         this.clear()
     }
 
     clear() {
         // Set to default
-        this.image.loadPixels()
-
-        for (let x = 0; x < this.image.width; x += 1) {
-            for (let y = 0; y < this.image.height; y += 1) {
+        for (let x = 0; x < this.width; x += 1) {
+            for (let y = 0; y < this.height; y += 1) {
                 this.setData(x, y, [0, 0]); // Clear the pheromone image
             }
         }
-
-        this.image.updatePixels();
     }
 
     private getData(x: number, y: number): [number, number] {
-        const imageData = this.image.get(x, y)
-        return [imageData[0], imageData[1]];
+        const offset = (Math.floor(x) + Math.floor(y) * this.width) * 2; // Each pixel has 2 channels (red and green)
+        const red = this.imageData.data[offset];
+        const green = this.imageData.data[offset + 1];
+        return [red, green];
     }
 
     private setData(x: number, y: number, data: [number, number]) {
-        this.image.set(x, y, color(data[0], data[1], 0, 255));
+        const offset = (Math.floor(x) + Math.floor(y) * this.width) * 2; // Each pixel has 2 channels (red and green)
+        this.imageData.data[offset] = data[0]
+        this.imageData.data[offset + 1] = data[1]
     }
+
+    // Push the latest data to the GPU
+    // updateImage() {
+    //     this.imageSource.context2D.putImageData(this.imageData, 0, 0);
+    //     this.image.update();
+    // }
 
     addPheromone(x: number, y: number, angle: number) {
         const [red, green] = this.getData(x * this.scale, y * this.scale);
@@ -72,21 +83,12 @@ export class Pheremone {
     }
 
     fadePheremones() {
-        this.image.loadPixels();
-
-        for (let x = 0; x < this.image.width; x += 1) {
-            for (let y = 0; y < this.image.height; y += 1) {
+        for (let x = 0; x < this.width; x += 1) {
+            for (let y = 0; y < this.height; y += 1) {
                 const [red, green] = this.getData(x, y);
                 
                 this.setData(x, y, [red - 0.6, green]); // Update the pheromone image
             }
         }
-
-        this.image.updatePixels()
-    }
-
-    // Spread pheromones by applying a blur filter
-    spreadPheremones() {
-        this.image.filter(BLUR, 0.2)
     }
 }
