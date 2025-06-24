@@ -20,7 +20,7 @@ if ((navigator as any).gpu) {
 }
 
 const canvasSize = 600;
-const pheremonesSize = 100;
+const pheremonesSize = 60;
 const antCount = 20_000
 
 const antSpeed = 0.2;
@@ -280,16 +280,9 @@ q.draw = () => {
     noStroke()
 
     // Draw all ants
+    fill(antColor);
     for (const ant of ants) {
-        push();
-        translate(ant.x, ant.y);
-        rotate(ant.angle);
-
-        fill(antColor);
-        
-        ellipse(0, 0, 2, 1);
-
-        pop();
+        ellipse(ant.x, ant.y, 1, 1);
     }
 
     // Zero the canvas
