@@ -12,6 +12,8 @@ import { Application, autoDetectRenderer, CanvasSource, Color, Container, Graphi
 import { dist, lerp, PI, random, TWO_PI } from './utils'
 import { Pheremone, type PheremoneData } from './pheremones'
 import { FoodMap } from './food';
+import { spawnAnts } from './nest';
+import { nest, type Ant } from './nest';
 
 // 60 ticks per second
 let start = new Date().getTime()
@@ -23,8 +25,8 @@ const antCount = 20_000
 
 const antSpeed = 1.75;
 const antChangeDirectionChance = 0.01;
-const antPheremoneDirectionMinStrength = 0.1;
-const antPheremoneDirectionMaxStrength = 0.3;
+const antPheremoneDirectionMinStrength = 20.0;
+const antPheremoneDirectionMaxStrength = 40.0;
 const antColor = new Color('#00000088');
 
 const foodDetectionRadius = 40;
@@ -35,90 +37,11 @@ const endSimulationFoodThreshold = 1000
 
 let remainingFood = 999999
 
-const renderer = await autoDetectRenderer({
-  preference: 'webgpu',
-});
-
-const app = new Application();
-app.renderer = renderer;
-
-await app.init({
-    backgroundAlpha: 0,
-    view: document.getElementById('app') as HTMLCanvasElement,
-    width: canvasSize,
-    height: canvasSize,
-});
-
-// Create and add a container to the stage
-const container = new ParticleContainer();
-
-app.stage.addChild(container);
-
-type Ant = {
-    x: number;
-    y: number;
-    angle: number;
-    hasFood: boolean;
-    nearNest: boolean;
-    nearFood: boolean;
-    sprite: IParticle;
-}
-
 const homePheremones = new Pheremone(pheremonesSize, pheremonesSize, pheremonesSize / canvasSize);
 
 const foodPheremones = new Pheremone(pheremonesSize, pheremonesSize, pheremonesSize / canvasSize);
 
 const foodTexture = new FoodMap(canvasSize, canvasSize)
-
-const foodGraphics = new Graphics().rect(0, 0, canvasSize, canvasSize).fill(foodTexture.image)
-app.stage.addChild(foodGraphics);
-
-const nest = {
-    x: 300,
-    y: 500,
-    radius: 50
-}
-
-const antTextureSource = new CanvasSource({
-    height: 1,
-    width: 1,
-    format: 'rgba8unorm',
-    scaleMode: 'nearest'
-})
-antTextureSource.context2D.fillStyle = antColor.toHex()
-antTextureSource.context2D.fillRect(0, 0, 1, 1);
-const antTexture = new Texture({ source: antTextureSource })
-
-const ants: Ant[] = []
-
-// Initialize ants
-for (let i = 0; i < antCount; i++) {
-
-    // Generate a random position near the nest
-    const angle = random(TWO_PI);
-    const distance = random(0, nest.radius);
-    
-    const x = nest.x + Math.cos(angle) * distance;
-    const y = nest.y + Math.sin(angle) * distance;
-
-    const sprite = new Particle({
-        texture: antTexture,
-        width: 1,
-        height: 1
-    })
-
-    ants.push({
-        x,
-        y,
-        angle: random(TWO_PI),
-        hasFood: false,
-        nearNest: false,
-        nearFood: false,
-        sprite: container.addParticle(sprite)
-    });
-}
-
-// Initialize food texture with random food pixels
 
 const ctx = foodTexture.imageSource.context2D;
 
@@ -130,6 +53,53 @@ ctx.fillText("Marshall", 300, 300);
 
 // Pull the changed pixels to the buffer
 foodTexture.pullImage()
+
+const antContainer = new ParticleContainer();
+
+const antTextureSource = new CanvasSource({
+    height: 1,
+    width: 1,
+    format: 'rgba8unorm',
+    scaleMode: 'nearest'
+})
+antTextureSource.context2D.fillStyle = antColor.toHex()
+antTextureSource.context2D.fillRect(0, 0, 1, 1);
+const antTexture = new Texture({ source: antTextureSource })
+
+const ants = spawnAnts(antContainer, antTexture, antCount);
+
+function tick() {
+    if (ants.length === 0) {
+        return
+    }
+
+    const now = new Date().getTime()
+
+    // If the simulation is running too slow
+    if (now - start > 1000) {
+        console.log('Simulation is running too slow, skipping frames');
+        start = now;
+    }
+
+    while (start < now) {
+        simulateAnts()
+        start += 1000 / simulationSpeed;
+    }
+
+    // Push pixel changes to the buffer
+    foodTexture.pushImage()
+
+    checkRemainingFood()
+
+    homePheremones.fadePheremones()
+    foodPheremones.fadePheremones()
+
+    // Draw all ants
+    for (const ant of ants) {
+        ant.sprite.x = ant.x
+        ant.sprite.y = ant.y
+    }
+}
 
 function checkRemainingFood() {
     remainingFood = 9990
@@ -216,7 +186,7 @@ function simulateAnts() {
         }
         
         // If pheromone value is high, turn towards it, ignore pheremone if they have a target
-        if (pheromoneValue.strength > 0.1) {
+        if (pheromoneValue.strength > 0) {
             let targetAngle = (TWO_PI - pheromoneValue.angle) % TWO_PI; // Invert angle to face the pheromone
             if (targetAngle < 0) {
                 targetAngle += TWO_PI;
@@ -224,7 +194,7 @@ function simulateAnts() {
             ant.angle = lerp(
                 ant.angle,
                 targetAngle,
-                random(antPheremoneDirectionMinStrength, antPheremoneDirectionMaxStrength) // Adjust angle towards pheromone
+                random(antPheremoneDirectionMinStrength, antPheremoneDirectionMaxStrength) * (pheromoneValue.strength / 255) // Adjust angle towards pheromone
             ) % TWO_PI;
         }
         
@@ -285,39 +255,25 @@ function endSimulation(ant: Ant) {
     }
 }
 
-app.ticker.add((time) => {
-    if (ants.length === 0) {
-        return
-    }
+async function run () {
+    const app = new Application();
 
-    const now = new Date().getTime()
+    app.renderer = await autoDetectRenderer({
+        preference: 'webgpu',
+    })
 
-    // If the simulation is running too slow
-    if (now - start > 1000) {
-        console.log('Simulation is running too slow, skipping frames');
-        start = now;
-    }
+    await app.init({
+        backgroundAlpha: 0,
+        view: document.getElementById('app') as HTMLCanvasElement,
+        width: canvasSize,
+        height: canvasSize,
+    });
 
-    while (start < now) {
-        simulateAnts()
-        start += 1000 / simulationSpeed;
-    }
+    app.stage.addChild(antContainer);
+    app.stage.addChild(new Graphics().rect(0, 0, canvasSize, canvasSize).fill(foodTexture.image));
 
-    // Push pixel changes to the buffer
-    foodTexture.pushImage()
-
-    checkRemainingFood()
-
-    homePheremones.fadePheremones()
-    foodPheremones.fadePheremones()
-
-    // Draw all ants
-    for (const ant of ants) {
-        ant.sprite.x = ant.x
-        ant.sprite.y = ant.y
-    }
-})
-
-
+    app.ticker.add(tick)
+}
+run()
 
 </script>
