@@ -12,11 +12,14 @@ import 'q5';
 import { Pheremone, type PheremoneData } from './pheremones'
 
 let q
+let antOffset: [number, number] = [0, 0]
 
 if ((navigator as any).gpu) {
     q = await Q5.WebGPU()
 } else {
     q = await new Q5()
+    // WebGL for some reason needs a different ant offset
+    antOffset = [300, 300]
 }
 
 const canvasSize = 600;
@@ -25,16 +28,17 @@ const antCount = 20_000
 
 const antSpeed = 0.2;
 const antChangeDirectionChance = 0.001;
-const antPheremoneDirectionMinStrength = 0.005;
-const antPheremoneDirectionMaxStrength = 0.015;
+const antPheremoneDirectionMinStrength = 0.01;
+const antPheremoneDirectionMaxStrength = 0.03;
 const antColor = color(0, 0, 0);
 
 const foodDetectionRadius = 40;
 // How many times can one pixel be eaten
 const foodStrength = 1;
 const foodColor = color(117, 162, 103)
+const endSimulationFoodThreshold = 1000
 
-let remainingFood = true;
+let remainingFood = 1;
 
 createCanvas(canvasSize, canvasSize, {
     alpha: true
@@ -95,20 +99,14 @@ ctx.fillStyle = `rgb(${foodColor.levels[0]}, ${foodColor.levels[1]}, ${foodColor
 ctx.fillText("Marshall", canvasSize / 2, canvasSize / 2);
 
 function checkRemainingFood() {
-    let remainingFoodPixels = 0
+    remainingFood = 0
 
     foodTexture.loadPixels();
 
     for (let i = 0; i < foodTexture.pixels.length; i += 4) {
         if (foodTexture.pixels[i + 3] > 0) {
-            remainingFoodPixels += 1;
+            remainingFood += 1;
         }
-    }
-
-    if (remainingFoodPixels < 1000) {
-        remainingFood = false;
-    } else {
-        remainingFood = true;
     }
 }
 
@@ -230,13 +228,15 @@ function moveTowardsNest(ant: Ant) {
 }
 
 function endSimulation(ant: Ant) {
-    if (remainingFood === true) {
+    if (remainingFood > endSimulationFoodThreshold) {
         return
     }
 
+    const effectStrength = remainingFood / endSimulationFoodThreshold
+
     // Return ants to nest
     const angleToNest = Math.atan2(nest.y - ant.y, nest.x - ant.x);
-    ant.angle = lerp(ant.angle, angleToNest, 0.16) % TWO_PI;
+    ant.angle = lerp(ant.angle, angleToNest, 0.16 * effectStrength) % TWO_PI;
 
     // If the ant is at the nest, it will die
     if (dist(ant.x, ant.y, nest.x, nest.y) < nest.radius) {
@@ -282,7 +282,7 @@ q.draw = () => {
     // Draw all ants
     fill(antColor);
     for (const ant of ants) {
-        ellipse(ant.x, ant.y, 1, 1);
+        ellipse(ant.x + antOffset[0], ant.y + antOffset[1], 1, 1);
     }
 
     // Zero the canvas
