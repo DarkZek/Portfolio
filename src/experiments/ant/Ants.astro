@@ -22,6 +22,10 @@ if ((navigator as any).gpu) {
     antOffset = [300, 300]
 }
 
+// 60 ticks per second
+let start = new Date().getTime()
+const simulationSpeed = 60
+
 const canvasSize = 600;
 const pheremonesSize = 60;
 const antCount = 20_000
@@ -38,7 +42,7 @@ const foodStrength = 1;
 const foodColor = color(117, 162, 103)
 const endSimulationFoodThreshold = 1000
 
-let remainingFood = 1;
+let remainingFood = 999999;
 
 createCanvas(canvasSize, canvasSize, {
     alpha: true
@@ -257,7 +261,18 @@ q.draw = () => {
 
     noStroke()
 
-    simulateAnts()
+    const now = new Date().getTime()
+
+    // If the simulation is running too slow
+    if (now - start > 1000) {
+        console.log('Simulation is running too slow, skipping frames');
+        start = now;
+    }
+
+    while (start < now) {
+        simulateAnts()
+        start += 1000 / simulationSpeed;
+    }
 
     // Zero the canvas
     translate(-canvasSize/2, -canvasSize/2);
