@@ -1,10 +1,30 @@
-<canvas id="app" width="600" height="600"></canvas>
+<div
+    id="ant-simulation"
+    style="width: 600px; height: 600px;"
+>
+    <canvas id="app" width="600" height="600"></canvas>
+</div>
 
 <style lang="scss" is:global>
+    #ant-simulation {
+        pointer-events: none;
+        position: relative;
+    }
     #app {
         border-radius: 300px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #ant-simulation::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 300px;
+        box-shadow: 0 0 30px 30px white inset;
         pointer-events: none;
     }
+
 </style>
 
 <script>
@@ -23,11 +43,11 @@ const canvasSize = 600;
 const pheremonesSize = 60;
 const antCount = 20_000
 
-const antSpeed = 1.75;
+const antSpeed = 2.5;
 const antChangeDirectionChance = 0.01;
-const antPheremoneDirectionMinStrength = 20.0;
-const antPheremoneDirectionMaxStrength = 40.0;
-const antColor = new Color('#00000088');
+const antPheremoneDirectionMinStrength = 100.0;
+const antPheremoneDirectionMaxStrength = 200.0;
+const antColor = new Color('#000000');
 
 const foodDetectionRadius = 40;
 // How many times can one pixel be eaten
@@ -68,7 +88,11 @@ const antTexture = new Texture({ source: antTextureSource })
 
 const ants = spawnAnts(antContainer, antTexture, antCount);
 
+let tickCount = 0
+
 function tick() {
+    tickCount++
+
     if (ants.length === 0) {
         return
     }
@@ -89,7 +113,10 @@ function tick() {
     // Push pixel changes to the buffer
     foodTexture.pushImage()
 
-    checkRemainingFood()
+    if (tickCount % 60 === 0) {
+        // Check food less often as it's not so important
+        checkRemainingFood()
+    }
 
     homePheremones.fadePheremones()
     foodPheremones.fadePheremones()
@@ -102,19 +129,20 @@ function tick() {
 }
 
 function checkRemainingFood() {
-    remainingFood = 9990
+    remainingFood = 0
     for (let i = 0; i < foodTexture.imageData.data.length; i += 4) {
         if (foodTexture.imageData.data[i + 3] > 0) {
             remainingFood += 1;
         }
     }
 }
+checkRemainingFood()
 
 function eatFood(ant: Ant) {
 
     // Check if ant is on food pixel
-    const foodPixelColor = foodTexture.get(ant.x, ant.y)
-    const isOnFood = foodPixelColor.alpha > 0
+    const [r, g, b, a] = foodTexture.get(ant.x, ant.y)
+    const isOnFood = a > 0
 
     // If the ant is close enough to the food and the food pixel is not transparent
     if (isOnFood && !ant.hasFood) {
@@ -123,14 +151,7 @@ function eatFood(ant: Ant) {
         // Rotate 180 degrees to face home
         rotateAnt(ant, PI);
 
-        const newColor = new Color({
-            r: foodPixelColor.red,
-            g: foodPixelColor.green,
-            b: foodPixelColor.blue,
-            a: foodPixelColor.alpha - (255 / foodStrength)
-        });
-
-        foodTexture.set(ant.x, ant.y, newColor)
+        foodTexture.set(ant.x, ant.y, [r, g, b, a - (255 / foodStrength)])
     }
 }
 
@@ -144,8 +165,8 @@ function rotateAnt(ant: Ant, angle: number) {
 
 function moveAnt(ant: Ant) {
     // Move forward
-    ant.x += Math.cos(ant.angle) * antSpeed;
-    ant.y += Math.sin(ant.angle) * antSpeed;
+    ant.x += Math.cos(ant.angle) * antSpeed * ant.speed;
+    ant.y += Math.sin(ant.angle) * antSpeed * ant.speed;
 
     // Wrap around edges
     if (ant.x < 0) ant.x += canvasSize;
@@ -251,6 +272,7 @@ function endSimulation(ant: Ant) {
         const index = ants.indexOf(ant);
         if (index > -1) {
             ants.splice(index, 1);
+            antContainer.removeParticle(ant.sprite)
         }
     }
 }

@@ -8,13 +8,14 @@ export type Ant = {
     hasFood: boolean;
     nearNest: boolean;
     nearFood: boolean;
+    speed: number;
     sprite: IParticle;
 }
 
 export const nest = {
     x: 300,
     y: 500,
-    radius: 50
+    radius: 60
 }
 
 export function spawnAnts(container: ParticleContainer, texture: Texture, count: number): Ant[] {
@@ -42,7 +43,8 @@ export function spawnAnts(container: ParticleContainer, texture: Texture, count:
             hasFood: false,
             nearNest: false,
             nearFood: false,
-            sprite: container.addParticle(sprite)
+            sprite: container.addParticle(sprite),
+            speed: random(0.6, 1.0)
         });
     }
 

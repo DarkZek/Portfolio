@@ -20,23 +20,23 @@ export class FoodMap {
         this.imageData = new ImageData(width, height)
     }
 
-    get(x: number, y: number): Color {
+    get(x: number, y: number): [number, number, number, number] {
         const offset = (Math.floor(x) + Math.floor(y) * this.image.width) * 4
 
-        return new Color({
-            r: this.imageData.data[offset],
-            g: this.imageData.data[offset + 1],
-            b: this.imageData.data[offset + 2],
-            a: this.imageData.data[offset + 3]
-        })
+        return [
+            this.imageData.data[offset],
+            this.imageData.data[offset + 1],
+            this.imageData.data[offset + 2],
+            this.imageData.data[offset + 3]
+        ]
     }
 
-    set(x: number, y: number, data: Color) {
+    set(x: number, y: number, data: [number, number, number, number]) {
         const offset = (Math.floor(x) + Math.floor(y) * this.image.width) * 4
-        this.imageData.data[offset] = data.red
-        this.imageData.data[offset + 1] = data.green
-        this.imageData.data[offset + 2] = data.blue
-        this.imageData.data[offset + 3] = data.alpha
+        this.imageData.data[offset] = data[0]
+        this.imageData.data[offset + 1] = data[1]
+        this.imageData.data[offset + 2] = data[2]
+        this.imageData.data[offset + 3] = data[3]
     }
 
     // Push the latest data to the GPU

@@ -87,7 +87,7 @@ export class Pheremone {
             for (let y = 0; y < this.height; y += 1) {
                 const [red, green] = this.getData(x, y);
                 
-                this.setData(x, y, [red - 0.6, green]); // Update the pheromone image
+                this.setData(x, y, [red - 1, green]); // Update the pheromone image
             }
         }
     }
