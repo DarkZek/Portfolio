@@ -9,7 +9,7 @@ export type Ant = {
     nearNest: boolean;
     nearFood: boolean;
     speed: number;
-    sprite: IParticle;
+    sprite: Particle;
 }
 
 export const nest = {
@@ -33,8 +33,10 @@ export function spawnAnts(container: ParticleContainer, texture: Texture, count:
         const sprite = new Particle({
             texture,
             width: 1,
-            height: 1
+            height: 1,
         })
+
+        container.addParticle(sprite)
 
         ants.push({
             x,
@@ -43,7 +45,7 @@ export function spawnAnts(container: ParticleContainer, texture: Texture, count:
             hasFood: false,
             nearNest: false,
             nearFood: false,
-            sprite: container.addParticle(sprite),
+            sprite,
             speed: random(0.6, 1.0)
         });
     }

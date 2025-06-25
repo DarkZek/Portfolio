@@ -34,9 +34,10 @@ import { Pheremone, type PheremoneData } from './pheremones'
 import { FoodMap } from './food';
 import { spawnAnts } from './nest';
 import { nest, type Ant } from './nest';
+import { generateAntTexture } from './texture';
 
-// 60 ticks per second
 let start = new Date().getTime()
+
 const simulationSpeed = 60
 
 const canvasSize = 600;
@@ -47,7 +48,7 @@ const antSpeed = 2.5;
 const antChangeDirectionChance = 0.01;
 const antPheremoneDirectionMinStrength = 100.0;
 const antPheremoneDirectionMaxStrength = 200.0;
-const antColor = new Color('#000000');
+const antColor = new Color('#00000060');
 
 const foodDetectionRadius = 40;
 // How many times can one pixel be eaten
@@ -58,7 +59,6 @@ const endSimulationFoodThreshold = 1000
 let remainingFood = 999999
 
 const homePheremones = new Pheremone(pheremonesSize, pheremonesSize, pheremonesSize / canvasSize);
-
 const foodPheremones = new Pheremone(pheremonesSize, pheremonesSize, pheremonesSize / canvasSize);
 
 const foodTexture = new FoodMap(canvasSize, canvasSize)
@@ -74,19 +74,16 @@ ctx.fillText("Marshall", 300, 300);
 // Pull the changed pixels to the buffer
 foodTexture.pullImage()
 
-const antContainer = new ParticleContainer();
+const antContainerNoFood = new ParticleContainer();
+const antContainerFood = new ParticleContainer();
+antContainerFood.tint = foodColor.toHex()
+antContainerFood.alpha = 0.8
+antContainerNoFood.tint = 'black'
+antContainerNoFood.alpha = 0.8
 
-const antTextureSource = new CanvasSource({
-    height: 1,
-    width: 1,
-    format: 'rgba8unorm',
-    scaleMode: 'nearest'
-})
-antTextureSource.context2D.fillStyle = antColor.toHex()
-antTextureSource.context2D.fillRect(0, 0, 1, 1);
-const antTexture = new Texture({ source: antTextureSource })
+const antTexture = generateAntTexture(new Color('white'))
 
-const ants = spawnAnts(antContainer, antTexture, antCount);
+const ants = spawnAnts(antContainerNoFood, antTexture, antCount);
 
 let tickCount = 0
 
@@ -152,6 +149,9 @@ function eatFood(ant: Ant) {
         rotateAnt(ant, PI);
 
         foodTexture.set(ant.x, ant.y, [r, g, b, a - (255 / foodStrength)])
+
+        antContainerFood.addParticle(ant.sprite);
+        antContainerNoFood.removeParticle(ant.sprite);
     }
 }
 
@@ -238,6 +238,9 @@ function dropFoodAtNest(ant: Ant) {
 
         // Rotate 180 degrees to face food source
         rotateAnt(ant, PI);
+
+        antContainerFood.removeParticle(ant.sprite);
+        antContainerNoFood.addParticle(ant.sprite);
     }
 }
 
@@ -250,7 +253,9 @@ function moveTowardsNest(ant: Ant) {
         // Doesn't know where the food is, so it will just wander around
         return;
     }
+    
     ant.nearNest = true;
+
     // Move towards food
     ant.angle = lerp(ant.angle, angleToNest, 0.2) % TWO_PI;
 }
@@ -272,7 +277,11 @@ function endSimulation(ant: Ant) {
         const index = ants.indexOf(ant);
         if (index > -1) {
             ants.splice(index, 1);
-            antContainer.removeParticle(ant.sprite)
+            if (ant.hasFood) {
+                antContainerFood.removeParticle(ant.sprite)
+            } else {
+                antContainerNoFood.removeParticle(ant.sprite)
+            }
         }
     }
 }
@@ -291,7 +300,8 @@ async function run () {
         height: canvasSize,
     });
 
-    app.stage.addChild(antContainer);
+    app.stage.addChild(antContainerFood);
+    app.stage.addChild(antContainerNoFood);
     app.stage.addChild(new Graphics().rect(0, 0, canvasSize, canvasSize).fill(foodTexture.image));
 
     app.ticker.add(tick)
