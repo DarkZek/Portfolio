@@ -314,5 +314,8 @@ async function run () {
 }
 
 document.addEventListener("astro:page-load", run)
+document.addEventListener("astro:before-swap", () => {
+    app.stop()
+});
 
 </script>
