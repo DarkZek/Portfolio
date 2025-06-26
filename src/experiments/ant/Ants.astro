@@ -2,7 +2,7 @@
     id="ant-simulation"
     style="width: 600px; height: 600px;"
 >
-    <canvas id="app" width="600" height="600"></canvas>
+    <canvas id="app"></canvas>
 </div>
 
 <style lang="scss" is:global>
@@ -11,16 +11,17 @@
         position: relative;
     }
     #app {
-        border-radius: 300px;
+        border-radius: 999999px;
         position: relative;
         overflow: hidden;
+        transform-origin: top left;
     }
 
     #ant-simulation::after {
         content: '';
         position: absolute;
         inset: -2px;
-        border-radius: 300px;
+        border-radius: 999999px;
         box-shadow: 0 0 30px 30px white inset;
         pointer-events: none;
     }
@@ -28,7 +29,7 @@
 </style>
 
 <script>
-import { Application, autoDetectRenderer, CanvasSource, Color, Container, Graphics, Particle, ParticleContainer, Sprite, Texture, type IParticle } from 'pixi.js';
+import { Application, autoDetectRenderer, Color, Graphics, ParticleContainer } from 'pixi.js';
 import { dist, lerp, PI, random, TWO_PI } from './utils'
 import { Pheremone, type PheremoneData } from './pheremones'
 import { FoodMap } from './food';
@@ -40,7 +41,8 @@ let start = new Date().getTime()
 
 const simulationSpeed = 60
 
-const canvasSize = 600;
+const canvasSize = Math.min(document.body.clientWidth - 20, 800)
+const visibleCanvasSize = canvasSize * window.devicePixelRatio;
 const pheremonesSize = 60;
 const antCount = 20_000
 
@@ -48,7 +50,6 @@ const antSpeed = 2.5;
 const antChangeDirectionChance = 0.01;
 const antPheremoneDirectionMinStrength = 100.0;
 const antPheremoneDirectionMaxStrength = 200.0;
-const antColor = new Color('#00000060');
 
 const foodDetectionRadius = 40;
 // How many times can one pixel be eaten
@@ -61,15 +62,11 @@ let remainingFood = 999999
 const homePheremones = new Pheremone(pheremonesSize, pheremonesSize, pheremonesSize / canvasSize);
 const foodPheremones = new Pheremone(pheremonesSize, pheremonesSize, pheremonesSize / canvasSize);
 
-const foodTexture = new FoodMap(canvasSize, canvasSize)
+const foodTexture = new FoodMap(visibleCanvasSize, visibleCanvasSize, window.devicePixelRatio)
+foodTexture.setup(foodColor)
 
-const ctx = foodTexture.imageSource.context2D;
-
-ctx.textBaseline = "middle";
-ctx.textAlign = "center";
-ctx.font = "bold 120px Arial";
-ctx.fillStyle = `rgb(${foodColor.red*255}, ${foodColor.green*255}, ${foodColor.blue*255})`;
-ctx.fillText("Marshall", 300, 300);
+nest.x = canvasSize * 0.5
+nest.y = canvasSize * 0.75
 
 // Pull the changed pixels to the buffer
 foodTexture.pullImage()
@@ -286,19 +283,28 @@ function endSimulation(ant: Ant) {
     }
 }
 
-async function run () {
-    const app = new Application();
+let app: Application
 
-    app.renderer = await autoDetectRenderer({
-        preference: 'webgpu',
-    })
+async function run () {
+    const antSimulationParent = document.getElementById('ant-simulation');
+    const view = document.getElementById('app') as HTMLCanvasElement
+
+    antSimulationParent!.style.height = `${canvasSize}px`;
+    antSimulationParent!.style.width = `${canvasSize}px`;
+
+    app = new Application();
 
     await app.init({
+        preference: 'webgpu',
         backgroundAlpha: 0,
-        view: document.getElementById('app') as HTMLCanvasElement,
+        view,
         width: canvasSize,
         height: canvasSize,
+        resolution: window.devicePixelRatio,
+        antialias: true
     });
+
+    view.style.scale = `${1/window.devicePixelRatio}`;
 
     app.stage.addChild(antContainerFood);
     app.stage.addChild(antContainerNoFood);
@@ -306,6 +312,7 @@ async function run () {
 
     app.ticker.add(tick)
 }
-run()
+
+document.addEventListener("astro:page-load", run)
 
 </script>
