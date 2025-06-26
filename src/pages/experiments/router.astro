@@ -2,8 +2,6 @@
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import HomeHeader from '../../components/HomeHeader.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
-import AntsComponent from '../../experiments/ant/Ants.astro';
 import Disclaimer from '../../experiments/Disclaimer.astro';
 
 ---
@@ -31,10 +29,16 @@ import Disclaimer from '../../experiments/Disclaimer.astro';
 	const routerIps = [
 		'192.168.0',
 		'192.168.1',
-		'192.168.88',
-		'192.168.100',
+		'192.168.2',
+		'192.168.3',
+		'192.168.10',
+		'192.168.11',
+		'192.168.20',
+		'192.168.30',
 		'192.168.50',
-		'192.168.255',
+		'192.168.88',
+		'192.168.99',
+		'192.168.100',
 		'10.0.0',
 		'10.10.0',
 		'10.10.10',
@@ -43,7 +47,8 @@ import Disclaimer from '../../experiments/Disclaimer.astro';
 
 	const ipOptions = [
 		'254',
-		'1'
+		'1',
+		'138'
 	]
 
 	async function testIpFetch(url: string): Promise<boolean> {
@@ -86,7 +91,16 @@ import Disclaimer from '../../experiments/Disclaimer.astro';
 	})
 
 	// Test all IPs in parallel
-	const results = await Promise.all(ips.map(ip => testIpFetch(ip)));
+	const results: boolean[] = []
+
+	const chunkSize = 8;
+	for (let i = 0; i < ips.length; i += chunkSize) {
+		const chunk = ips.slice(i, i + chunkSize);
+		
+		const fetchPromises = chunk.map(ip => testIpFetch(ip));
+		const chunkResults = await Promise.all(fetchPromises);
+		results.push(...chunkResults);
+	}
 
 	const validIps = ips.filter((_, index) => results[index]);
 
