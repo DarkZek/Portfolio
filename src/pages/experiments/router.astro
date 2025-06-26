@@ -1,0 +1,122 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import HomeHeader from '../../components/HomeHeader.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import AntsComponent from '../../experiments/ant/Ants.astro';
+import Disclaimer from '../../experiments/Disclaimer.astro';
+
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<div class="content">
+			<HomeHeader absolute={true} />
+			<Disclaimer />
+			<main class="main-page">
+				<span>Your router ip is:
+					<a id="ip" target="_blank">Loading</a>
+				</span>
+			</main>
+		</div>
+		<Footer />
+	</body>
+</html>
+
+<script>
+	const routerIps = [
+		'192.168.0',
+		'192.168.1',
+		'192.168.88',
+		'192.168.100',
+		'192.168.50',
+		'192.168.255',
+		'10.0.0',
+		'10.10.0',
+		'10.10.10',
+		'172.20.0'
+	]
+
+	const ipOptions = [
+		'254',
+		'1'
+	]
+
+	async function testIpFetch(url: string): Promise<boolean> {
+		try {
+			const controller = new AbortController();
+
+			// Abort after barely any time since we just want to check if the IP has anything live
+			setTimeout(() => {
+				controller.abort();
+			}, 200);
+
+			await fetch(`https://${url}`, {
+				signal: controller.signal,
+			})
+
+			return true
+		} catch (e: any) {
+			// If the error is a network error, we can assume the IP is not valid
+			return e.message === 'Failed to fetch'
+		}
+	}
+
+	async function testIpWebsocket(url: string): Promise<boolean> {
+		return new Promise((resolve) => {
+			const socket = new WebSocket(`wss://${url}`);
+			socket.onerror = () => {
+				// If the websocket fails to connect before the timeout its valid
+				resolve(true)
+			}
+			
+			// If it didnt find a device to connect to within 200ms it is not valid
+			setTimeout(() => resolve(false), 5000)
+		})
+	}
+
+	const ips = routerIps.flatMap(routerIp => {
+		return ipOptions.map(ipOption => {
+			return `${routerIp}.${ipOption}`
+		})
+	})
+
+	// Test all IPs in parallel
+	const results = await Promise.all(ips.map(ip => testIpFetch(ip)));
+
+	const validIps = ips.filter((_, index) => results[index]);
+
+	const link = document.getElementById('ip')! as HTMLAnchorElement;
+
+	if (validIps.length === 1) {
+		link.innerText = validIps[0];
+		link.href = `http://${validIps[0]}`;
+	} else if (validIps.length > 1) {
+		link.innerText = validIps.join(' or ');
+	} else {
+		link.innerText = 'No valid router IP found';
+	}
+
+</script>
+
+<style>
+	.content {
+        max-width: max(min(70vw, 1200px), 670px);
+		margin: auto;
+		position: relative;
+	}
+
+	main {
+		padding: 0px;
+	}
+	
+	.main-page {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+</style>
