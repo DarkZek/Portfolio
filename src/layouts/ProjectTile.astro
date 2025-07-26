@@ -24,6 +24,9 @@ switch(collectionEntry.slug) {
 	case 'flixr':
 		TitleComponent = (await import('../components/titles/Flixr.astro')).default;
 		break;
+	case 'gamification-saas':
+		TitleComponent = (await import('../components/titles/GamificationSaaS.astro')).default;
+		break;
 }
 ---
 
