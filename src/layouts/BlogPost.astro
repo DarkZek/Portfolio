@@ -14,7 +14,7 @@ const { title, description, pubDate, updatedDate, image, unlisted } = Astro.prop
 <html lang="en">
 	<head>
 		<BaseHead title={`${title} | ${SITE_TITLE}`} description={description} image={image?.src} />
-		<style>
+		<style lang="scss">
 			main {
 				width: calc(100% - 2em);
 				max-width: 100%;

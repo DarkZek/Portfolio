@@ -11,6 +11,7 @@ import node from '@astrojs/node';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://marshalldoes.dev',
+
   integrations: [mdx(), sitemap(), icon()],
 
   prefetch: {
@@ -33,9 +34,5 @@ export default defineConfig({
     }
   },
 
-  output: 'server',
-
-  adapter: node({
-    mode: 'standalone',
-  }),
+  output: 'static'
 });
