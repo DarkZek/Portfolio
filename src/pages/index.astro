@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import HomeHeader from '../components/HomeHeader.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { Icon } from 'astro-icon/components';
+import MarshallScott from '../components/titles/MarshallScott.astro';
 
 // Get newest blog post
 const posts = (await getCollection('blog'))
@@ -28,54 +29,10 @@ const newestPost = posts[0];
 			</div>
 			<main class="main-page">
 				<div class="section-1">
-					<div class="title">
-						<h1><span>H</span><span>i</span><span>,</span></h1>
-						<h1>
-							<span>I</span><span>'</span><span>m</span><div class="space">&nbsp;</div><span>M</span><span>a</span><span>r</span><span>s</span><span>h</span><span>a</span><span>l</span><span>l</span>
-						</h1>
-					</div>
+					<MarshallScott />
 					<p class="subtitle">
 						I'm a Software Engineer with a passion for computer graphics & security.
 					</p>
-					<script>
-						import { animate, stagger } from 'animejs'
-
-						document.addEventListener("astro:page-load", () => {
-							animate('.main-page .title', {
-								keyframes: {
-									'0%': { opacity: 0, translateY: '2rem' },
-									'100%': { opacity: 1, translateY: '0rem' },
-								},
-								duration: 500,
-								ease: 'out(2.0)',
-								autoplay: true,
-							});
-
-							animate('.main-page .subtitle', {
-								keyframes: {
-									'0%': { opacity: 0, translateY: '2.5rem', color: '#ffffff' },
-									'100%': { opacity: 1, translateY: '0rem', color: '#0b0b0b' },
-								},
-								delay: 20,
-								duration: 500,
-								ease: 'out(2.0)',
-								autoplay: true,
-							});
-
-							animate('.main-page .title span', {
-								keyframes: {
-									'0%': { color: 'hsla(130, 40%, 82%, 0)' },
-									'55%': { color: 'hsl(255, 40%, 82%)' },
-									'56%': { color: 'hsl(0, 40%, 82%)' },
-									'100%': { color: 'hsl(106, 24%, 52%)' },
-								},
-								duration: 1000,
-								ease: 'out(2.0)',
-								autoplay: true,
-								delay: stagger(20, { start: 100}),
-							});
-						})
-					</script>
 				</div>
 				<a class="experiment" href="/experiments/ants" title="Ant Simulation">
 					<span>🐜 🐜 Check out my latest experiment</span>
@@ -113,19 +70,6 @@ const newestPost = posts[0];
 
 	main {
 		padding: 0px;
-	}
-	.title {
-		h1 {
-			color: white;
-			font-size: min(5rem, 12vw);
-			display: flex;
-			margin-bottom: 0px;
-			line-height: 1.2;
-		}
-
-		.space {
-			white-space: nowrap;
-		}
 	}
 
 	.section-1 {
