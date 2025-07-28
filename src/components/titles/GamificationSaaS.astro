@@ -1,1 +1,66 @@
-<h4>Gamification SaaS</h4>
+<div class="gamification-saas title">
+    <h4>
+        <span>G</span>
+        <span>a</span>
+        <span>m</span>
+        <span>i</span>
+        <span>f</span>
+        <span>i</span>
+        <span>c</span>
+        <span>a</span>
+        <span>t</span>
+        <span>i</span>
+        <span>o</span>
+        <span>n</span>
+        <div class="space">&nbsp;</div>
+        <span>S</span>
+        <span>a</span>
+        <span>a</span>
+        <span>S</span>
+    </h4>
+</div>
+
+<style lang="scss">
+	.title {
+		h4 {
+			color: white;
+			font-size: min(3rem, 9vw);
+			display: flex;
+			margin-bottom: 0px;
+			line-height: 1.2;
+		}
+
+		.space {
+			white-space: nowrap;
+		}
+	}
+</style>
+
+<script>
+    import { animate, stagger } from 'animejs'
+
+    document.addEventListener("astro:page-load", () => {
+        animate('.gamification-saas.title', {
+            keyframes: {
+                '0%': { opacity: 0, translateY: '2rem' },
+                '100%': { opacity: 1, translateY: '0rem' },
+            },
+            duration: 500,
+            ease: 'out(2.0)',
+            autoplay: true,
+        });
+
+        animate('.gamification-saas.title span', {
+            keyframes: {
+                '0%': { color: 'hsla(130, 40%, 82%, 0)' },
+                '55%': { color: 'hsl(255, 40%, 82%)' },
+                '56%': { color: 'hsl(0, 40%, 82%)' },
+                '100%': { color: 'hsl(106, 24%, 52%)' },
+            },
+            duration: 1000,
+            ease: 'out(2.0)',
+            autoplay: true,
+            delay: stagger(20, { start: 100}),
+        });
+    })
+</script>
