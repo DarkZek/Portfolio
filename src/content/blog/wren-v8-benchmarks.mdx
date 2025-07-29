@@ -1,0 +1,53 @@
+---
+title: 'Benchmarking Wren vs V8 - A Performance Deep Dive'
+description: 'Wren is a lean, class-based, concurrent scripting language. V8 is a powerful, highly optimized JavaScript engine. I want to find out what one is faster.'
+pubDate: 'Jul 29 2026'
+image: './wren-v8-benchmarks.webp'
+---
+import { LinkPreview } from 'astro-embed'
+
+> Disclaimer: I'm no benchmarking wizard, the information within this article could be incorrect or misleading.
+
+Today I will share the results and methodology behind my benchmark where I compare the performance of the Wren scripting language against Google's V8 Javascript engine.
+
+### Why Benchmarks Matter
+Wren is a lean, class-based, concurrent scripting language originally created by Bob Nystrom. Its simple design makes it fast and easy to embed in projects.
+
+V8 is a powerful, highly optimized JavaScript engine powering Chrome and Node.js. It's built to handle real-world web-scale workloads.
+
+### Benchmarks & Setup
+
+The benchmark is designed to measure the performance of function calls, basic arithmetic and the time taken for interoperability between script values and rust values.
+
+Each benchmark was executed continuously for 3 seconds as a warmup. The code was then ran for 5 seconds looping continuously taking samples of how long each iteration took.
+
+V8 supports what's known as "Just In Time" compilation. This results in significant speed boosts on platforms where it is supported. It is not supported everywhere so the non JIT performance of v8 must also be considered.
+
+This benchmark uses Criterion.rs to perform the benchmark, and it uses `black_box` to prevent Rust from optimising portions of the code that wouldn't be optimisable in a real-world scenario.
+
+### Results Overview
+
+Results from a M2 Macbook Pro.
+
+| Parameters (A, B) | Rewren | Rusty-V8 (No JIT) | Rusty-V8 (JIT) |
+|-------------------|-------------|---------------------|-----------------------|
+|1, 1|89ns|123.67ns|72.029ns|
+|300, 50|2,477.4ns|2,445.5ns|504.06ns|
+|3000, 500|24,490ns|18,552ns|4,303.4ns|
+
+### Insights
+
+1. Rusty-V8 was consistently the fastest engine.
+
+2. Rewren started off faster than V8 without JIT. This suggests that its interop time is one of its strengths.
+However it started losing heavily when the virtual machine speed became more of a factor at higher A & B counts, falling behind V8.
+
+3. Rusty-V8 JIT was 5.6x faster than Rewren on A=3000, B=500
+
+4. In lightweight computational tasks, Wren delivers competitive performance—sometimes even beating a more complex engine like V8.
+
+5. V8 still wins in certain compute-heavy benchmarks, thanks to aggressive JIT compilers and runtime optimizations from its large corporate backing.
+
+### Code
+
+<LinkPreview id="https://github.com/DarkZek/wren_v8_benchmarks"/>
