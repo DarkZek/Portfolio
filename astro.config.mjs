@@ -8,11 +8,20 @@ import icon from 'astro-icon';
 
 import node from '@astrojs/node';
 
+import compress from 'astro-compress';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://marshalldoes.dev',
 
-  integrations: [mdx(), sitemap(), icon()],
+  integrations: [
+    mdx(),
+    sitemap(),
+    icon(),
+    compress({
+      Image: false
+    })
+  ],
 
   prefetch: {
     prefetchAll: true
