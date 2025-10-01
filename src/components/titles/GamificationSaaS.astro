@@ -1,66 +1,74 @@
 <div class="gamification-saas title">
-    <h4>
-        <span>G</span>
-        <span>a</span>
-        <span>m</span>
-        <span>i</span>
-        <span>f</span>
-        <span>i</span>
-        <span>c</span>
-        <span>a</span>
-        <span>t</span>
-        <span>i</span>
-        <span>o</span>
-        <span>n</span>
-        <div class="space">&nbsp;</div>
-        <span>S</span>
-        <span>a</span>
-        <span>a</span>
-        <span>S</span>
-    </h4>
+  <h4>
+    <span>G</span>
+    <span>a</span>
+    <span>m</span>
+    <span>i</span>
+    <span>f</span>
+    <span>i</span>
+    <span>c</span>
+    <span>a</span>
+    <span>t</span>
+    <span>i</span>
+    <span>o</span>
+    <span>n</span>
+    <div class="space">&nbsp;</div>
+    <span>S</span>
+    <span>a</span>
+    <span>a</span>
+    <span>S</span>
+  </h4>
 </div>
 
 <style lang="scss">
-	.title {
-		h4 {
-			color: white;
-			font-size: min(3rem, 9vw);
-			display: flex;
-			margin-bottom: 0px;
-			line-height: 1.2;
-		}
+  $ease: cubic-bezier(0.0, 0.0, 0.50, 1.0);
 
-		.space {
-			white-space: nowrap;
-		}
-	}
+  .title {
+    h4 {
+      color: white;
+      font-size: min(3rem, 9vw);
+      display: flex;
+      margin-bottom: 0px;
+      line-height: 1.2;
+      opacity: 0;
+      transform: translateY(2rem);
+      animation: fadeSlideIn 0.5s $ease forwards;
+    }
+
+    span {
+      opacity: 0;
+      animation: colorFade 1s $ease forwards;
+    }
+
+    // auto-generate nth-child delays for 17 spans
+    @for $i from 1 through 17 {
+      span:nth-child(#{$i}) {
+        animation-delay: $i * 20ms;
+      }
+    }
+
+    .space {
+      white-space: nowrap;
+    }
+  }
+
+  /* Container fade/slide in */
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Letter color animation */
+  @keyframes colorFade {
+    0%   { color: hsla(130, 40%, 82%, 0); }
+    55%  { color: hsl(255, 40%, 82%); }
+    56%  { color: hsl(0, 40%, 82%); }
+    100% { color: hsl(106, 24%, 52%); opacity: 1; }
+  }
 </style>
-
-<script>
-    import { animate, stagger } from 'animejs'
-
-    document.addEventListener("astro:page-load", () => {
-        animate('.gamification-saas.title', {
-            keyframes: {
-                '0%': { opacity: 0, translateY: '2rem' },
-                '100%': { opacity: 1, translateY: '0rem' },
-            },
-            duration: 500,
-            ease: 'out(2.0)',
-            autoplay: true,
-        });
-
-        animate('.gamification-saas.title span', {
-            keyframes: {
-                '0%': { color: 'hsla(130, 40%, 82%, 0)' },
-                '55%': { color: 'hsl(255, 40%, 82%)' },
-                '56%': { color: 'hsl(0, 40%, 82%)' },
-                '100%': { color: 'hsl(106, 24%, 52%)' },
-            },
-            duration: 1000,
-            ease: 'out(2.0)',
-            autoplay: true,
-            delay: stagger(20, { start: 100}),
-        });
-    })
-</script>

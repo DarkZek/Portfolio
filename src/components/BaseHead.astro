@@ -48,13 +48,20 @@ const { title, description, image } = Astro.props;
 
 <ViewTransitions />
 
-<script defer data-domain="marshalldoes.dev" src="https://a.marshalldoes.dev/js/script.file-downloads.hash.outbound-links.js"></script>
 <script>
 declare global {
-interface Window {
-	plausible?: any;
+  interface Window {
+    plausible?: any;
+  }
 }
 
-}
 window.plausible = window.plausible || function() { (window.plausible!.q = window.plausible.q || []).push(arguments) }
+
+window.addEventListener('load', () => {
+  const s = document.createElement("script");
+  s.defer = true;
+  s.setAttribute("data-domain", "marshalldoes.dev");
+  s.src = "https://a.marshalldoes.dev/js/script.file-downloads.hash.outbound-links.js";
+  document.head.appendChild(s);
+})
 </script>
