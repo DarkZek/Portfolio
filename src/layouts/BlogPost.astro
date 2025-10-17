@@ -19,6 +19,7 @@ const { title, description, pubDate, updatedDate, image, unlisted } = Astro.prop
 				width: calc(100% - 2em);
 				max-width: 100%;
 				margin: 0;
+        padding-top: 1em;
 			}
 			.hero-image {
 				width: 100%;
@@ -42,7 +43,7 @@ const { title, description, pubDate, updatedDate, image, unlisted } = Astro.prop
 				text-align: center;
 				line-height: 1;
 			}
-			.title h1 {
+			.title h2 {
 				margin: 0 0 0.5em 0;
 			}
 			.date {
@@ -62,7 +63,7 @@ const { title, description, pubDate, updatedDate, image, unlisted } = Astro.prop
 				<div
 					class="hero-image"
 				>
-					{image && <img width={850} src={image.src} alt="" transition:name={`blog hero ${image.src} image`} />}
+					{image && <img width={700} src={image.src} alt="" transition:name={`blog hero ${image.src} image`} />}
 				</div>
 				<div class="prose">
 					<div class="title">
@@ -80,11 +81,11 @@ const { title, description, pubDate, updatedDate, image, unlisted } = Astro.prop
 							}
 							{ unlisted && '(unlisted)' }
 						</div>
-						<h1
+						<h2
 							transition:name={`blog title ${title}`}
 						>
 							{title}
-						</h1>
+						</h2>
 						<hr />
 					</div>
 					<slot />
