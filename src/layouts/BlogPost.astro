@@ -43,7 +43,7 @@ const { title, description, pubDate, updatedDate, image, unlisted } = Astro.prop
 				text-align: center;
 				line-height: 1;
 			}
-			.title h2 {
+			.title h3 {
 				margin: 0 0 0.5em 0;
 			}
 			.date {
@@ -81,11 +81,11 @@ const { title, description, pubDate, updatedDate, image, unlisted } = Astro.prop
 							}
 							{ unlisted && '(unlisted)' }
 						</div>
-						<h2
+						<h3
 							transition:name={`blog title ${title}`}
 						>
 							{title}
-						</h2>
+						</h3>
 						<hr />
 					</div>
 					<slot />
