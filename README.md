@@ -8,7 +8,6 @@ Welcome to my portfolio site showcasing my work as a Software Engineer.
 - TypeScript
 - MDX
 - SCSS
-- Node.js
 
 ## Getting Started
 
